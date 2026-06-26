@@ -291,19 +291,19 @@ export function calcularInversion(raw) {
   if (!plusvaliaSuperaInflacion && !retornoSuperaDeposito) {
     alertaNivel = "rojo";
     alertaMensaje =
-      "Doble alerta: la plusvalía no le gana a la inflación y el retorno total tampoco supera un depósito a plazo sin riesgo. Difícil que compense el riesgo de invertir.";
+      "No le gana a la inflación ni al banco. Hay que pensarlo dos veces.";
   } else if (!plusvaliaSuperaInflacion) {
     alertaNivel = "amarillo";
     alertaMensaje =
-      "La plusvalía sola no le gana a la inflación: la apreciación pierde poder adquisitivo. Lo que sostiene el caso es el alquiler, no el precio. Revisa que el flujo aguante.";
+      "La sola subida de precio no le gana a la inflación; lo que salva el caso es el alquiler. Revisa que el flujo aguante.";
   } else if (!retornoSuperaDeposito) {
     alertaNivel = "amarillo";
     alertaMensaje =
-      "La plusvalía supera la inflación, pero sumando alquiler el retorno total no le gana a un depósito a plazo sin riesgo.";
+      "Le gana a la inflación, pero sumando el alquiler todavía rinde menos que dejar la plata en el banco.";
   } else {
     alertaNivel = "verde";
     alertaMensaje =
-      "La plusvalía supera la inflación y el retorno total (con alquiler) le gana a un depósito a plazo.";
+      "Le gana a la inflación y, con el alquiler, rinde más que un depósito a plazo.";
   }
 
   const descarteRapido = {

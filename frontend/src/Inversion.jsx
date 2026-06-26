@@ -185,22 +185,34 @@ function Resultado({ res }) {
 }
 
 const ALERTA = {
-  rojo:     { bg: "#FBEAE8", border: "#C0392B", ink: "#8E2A20", icon: "⛔" },
-  amarillo: { bg: "#FBF3E0", border: "#B8860B", ink: "#7A5A06", icon: "⚠️" },
-  verde:    { bg: "#E8F5F0", border: "#0B6E4F", ink: "#074535", icon: "✅" },
+  rojo:     { bg: "#FBEAE8", border: "#C0392B", ink: "#8E2A20" },
+  amarillo: { bg: "#FBF3E0", border: "#B8860B", ink: "#7A5A06" },
+  verde:    { bg: "#E8F5F0", border: "#0B6E4F", ink: "#074535" },
 };
 
 function AlertaDescarte({ d }) {
   if (!d) return null;
   const c = ALERTA[d.nivel] || ALERTA.amarillo;
-  const Check = ({ ok }) => <span style={{ color: ok ? "#0B6E4F" : "#C0392B", fontWeight: 700 }}>{ok ? "✓" : "✗"}</span>;
+  const Item = ({ ok, q, detail }) => (
+    <div style={{ display: "flex", gap: 8 }}>
+      <span style={{ color: ok ? "#0B6E4F" : "#C0392B", fontWeight: 700, lineHeight: 1.4 }}>{ok ? "✓" : "✗"}</span>
+      <div>
+        <div style={{ fontWeight: 600, color: "var(--ink)" }}>{q}</div>
+        <div style={{ fontSize: 12, color: "var(--ink-60)" }}>{detail}</div>
+      </div>
+    </div>
+  );
   return (
     <div style={{ background: c.bg, borderLeft: `3px solid ${c.border}`, borderRadius: 8, padding: "12px 14px", marginBottom: 18 }}>
-      <div style={{ fontSize: 13, fontWeight: 600, color: c.ink, marginBottom: 8 }}>{c.icon} Descarte rápido</div>
-      <div style={{ fontSize: 13, color: c.ink, lineHeight: 1.45, marginBottom: 10 }}>{d.mensaje}</div>
-      <div style={{ fontSize: 12.5, color: "var(--ink)", display: "grid", gap: 4 }}>
-        <div><Check ok={d.piso.superaInflacion} /> Piso: plusvalía {pct(d.piso.plusvaliaAnualOptimista)} vs inflación {pct(d.piso.inflacionAnual)}</div>
-        <div><Check ok={d.valla.superaDeposito} /> Valla: retorno total {pct(d.valla.retornoTotalAnual)} vs depósito a plazo {pct(d.valla.depositoPlazo)}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: c.ink, marginBottom: 6 }}>En resumen</div>
+      <div style={{ fontSize: 13, color: c.ink, lineHeight: 1.45, marginBottom: 12 }}>{d.mensaje}</div>
+      <div style={{ fontSize: 13, display: "grid", gap: 10 }}>
+        <Item ok={d.piso.superaInflacion}
+          q="¿Le gana a la inflación?"
+          detail={`sube ${pct(d.piso.plusvaliaAnualOptimista)} al año vs ${pct(d.piso.inflacionAnual)} de inflación`} />
+        <Item ok={d.valla.superaDeposito}
+          q="¿Rinde más que el banco?"
+          detail={`${pct(d.valla.retornoTotalAnual)} al año vs ${pct(d.valla.depositoPlazo)} de un depósito a plazo`} />
       </div>
     </div>
   );
