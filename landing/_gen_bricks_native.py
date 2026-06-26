@@ -205,26 +205,28 @@ lk=DIV(row,["links"])
 for t in ["Cómo funciona","Herramientas","Por qué confiar","Evaluar gratis"]: T(lk,t,tag="a")
 T(fr,"m2peru · El valor real de tu metro cuadrado. · Los resultados son estimaciones basadas en data de mercado público.",["copy"])
 
-# ── 3) globalClasses + ensamblado ──
+# CTAs → app en Plesk
+APP="https://m2mvp.pruebalucuma.site"
+for e in elements:
+    lk=e["settings"].get("link")
+    if isinstance(lk,dict) and lk.get("url")=="/": lk["url"]=APP
+
+# ── 3) globalClasses + ensamblado (formato copiar/pegar de Bricks) ──
 global_classes=[{"id":cid,"name":nm,"settings":{}} for nm,cid in gc.items()]
-template=[{
-  "title":"m2peru — Landing (nativo)",
-  "bricksData":{
-    "content":elements,
-    "globalClasses":global_classes,
-    "globalElements":[],
-    "source":"bricksTemplate",
-    "sourceUrl":"https://m2peru.com",
-    "version":"1.9.9",
-    "templateType":"section",
-  }
-}]
+template={
+  "content":elements,
+  "source":"bricksCopiedElements",
+  "sourceUrl":"https://m2peru.com",
+  "version":"1.9.9",
+  "globalClasses":global_classes,
+  "globalElements":[],
+}
 out="/home/claude-user/m2peru/landing/m2peru-bricks-native.json"
 json.dump(template, open(out,"w",encoding="utf-8"), ensure_ascii=False, indent=2)
 
 # sanity
 js=json.load(open(out,encoding="utf-8"))
-els=js[0]["bricksData"]["content"]
+els=js["content"]
 ids=[e["id"] for e in els]
 assert len(ids)==len(set(ids)),"ids duplicados"
 # todos los parents existen
