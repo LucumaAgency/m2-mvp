@@ -36,21 +36,75 @@ def scope(css, scope_sel):
         i=k+1
     return "".join(res)
 
-master = scope(strip_comments(css), "%root%")
-# tags estructurales → clases (Bricks no siempre respeta el tag custom)
-master = master.replace("%root% section", "%root% .sec")
-master = master.replace("%root% nav", "%root% .navbar")
-master = master.replace("%root% footer", "%root% .ftr")
-# clases auxiliares (sustituyen los inline-styles de la landing)
-master += (
-  "%root% .lead-lg{font-size:18px;max-width:640px}"
-  "%root% .vp-3{grid-template-columns:repeat(3,1fr)}"
-  "@media(max-width:860px){%root% .vp-3{grid-template-columns:1fr}}"
-  "%root% .stat-dark{background:#0a3a2c}"
-  "%root% .stat-dark .n{color:#fff}%root% .stat-dark .l{color:#A9CFC2}"
-  "%root% .mk-30{left:30%}"
-  "%root% .center-head{margin-left:auto;margin-right:auto}"
-)
+# Parser de reglas (un nivel de @media) y distribución por clase.
+def parse_rules(c):
+    c = strip_comments(c); rules = []; i = 0; n = len(c)
+    while i < n:
+        if c[i].isspace(): i += 1; continue
+        j = c.find("{", i)
+        if j < 0: break
+        pre = c[i:j].strip(); d = 0; k = j
+        while k < n:
+            if c[k] == "{": d += 1
+            elif c[k] == "}":
+                d -= 1
+                if d == 0: break
+            k += 1
+        inner = c[j+1:k]
+        if pre.startswith("@"):
+            low = pre.lower()
+            if low.startswith("@media") or low.startswith("@supports"):
+                for (_, sel, body) in parse_rules(inner):
+                    rules.append((pre, sel, body))
+            else:  # keyframes / font-face → verbatim
+                rules.append((None, pre, inner))
+        else:
+            rules.append((None, pre, inner))
+        i = k + 1
+    return rules
+
+import re as _re
+def conv(sel):  # tags estructurales → clases (sin tocar .nav-links, .section-head…)
+    sel = _re.sub(r'(?<![.\w-])section(?![\w-])', '.sec', sel)
+    sel = _re.sub(r'(?<![.\w-])nav(?![\w-])', '.navbar', sel)
+    sel = _re.sub(r'(?<![.\w-])footer(?![\w-])', '.ftr', sel)
+    return sel
+
+ROOT = "m2"
+cls_css = {}
+def addc(name, rule): cls_css.setdefault(name, []).append(rule)
+
+for media, sel, body in parse_rules(css):
+    if sel.startswith("@"):           # keyframes/font-face → al root, verbatim
+        addc(ROOT, f"{sel}{{{body}}}"); continue
+    for part in conv(sel).split(","):
+        p = part.strip()
+        if not p: continue
+        last = p.split()[-1]
+        classes = _re.findall(r'\.([A-Za-z0-9_-]+)', last)
+        if classes:                   # la regla apunta a una clase → va en esa clase
+            cl = classes[-1]
+            idx = p.rfind("." + cl)
+            rewritten = p[:idx] + "%root%" + p[idx+len("."+cl):]
+            rule = f"{rewritten}{{{body}}}"
+        else:                         # tag / * / :root / body → al root
+            if p in (":root", "body", "html"): rsel = "%root%"
+            elif p == "*": rsel = "%root% *"
+            else: rsel = "%root% " + p
+            cl = ROOT
+            rule = f"{rsel}{{{body}}}"
+        if media: rule = f"{media}{{{rule}}}"
+        addc(cl, rule)
+
+# clases auxiliares (reemplazan inline-styles de la landing)
+addc("lead-lg", "%root%{font-size:18px;max-width:640px}")
+addc("vp-3", "%root%{grid-template-columns:repeat(3,1fr)}")
+addc("vp-3", "@media(max-width:860px){%root%{grid-template-columns:1fr}}")
+addc("stat-dark", "%root%{background:#0a3a2c}")
+addc("n", ".stat-dark %root%{color:#fff}")
+addc("l", ".stat-dark %root%{color:#A9CFC2}")
+addc("mk-30", "%root%{left:30%}")
+addc("center-head", "%root%{text-align:center}")
 
 # ── 2) Constructor de árbol Bricks ──
 elements=[]; by_id={}; gc={}; n=[0]
@@ -79,8 +133,8 @@ def T(parent,text,classes=None,custom=None,tag="p"): return E("text-basic",paren
 def DIV(parent,classes=None,tag=None,custom=None): return E("div",parent,classes,tag=tag,custom=custom)
 def BTN(parent,text,link,classes): return E("button",parent,classes,{"text":text,"link":{"type":"external","url":link}})
 
-# raíz: lleva TODO el CSS maestro y las variables
-root = E("section","0",classes=["m2"],custom=master, tag="section")
+# raíz: clase m2 (su CSS va en la clase global, distribuido por clase)
+root = E("section",0,classes=["m2"], tag="section")
 
 GREEN="var(--green)"
 
@@ -91,7 +145,8 @@ nl=DIV(navw,["nav-links"])
 T(nl,"Cómo funciona",["hide-sm"],tag="a"); # nota: enlaces simples como texto
 E("text-basic",nl,["hide-sm"],{"text":"Herramientas","tag":"a"})
 E("text-basic",nl,["hide-sm"],{"text":"Por qué confiar","tag":"a"})
-BTN(nl,"Evaluar gratis","/",["btn","btn-green"])
+_navcta=BTN(nl,"Evaluar gratis","/",["btn","btn-green"])
+by_id[_navcta]["settings"]["_cssCustom"]="%root%, %root% *{color:#fff!important}"
 
 # ── HERO ──
 hero=DIV(root,["hero"],tag="header"); hw=DIV(hero,["wrap"])
@@ -211,8 +266,12 @@ for e in elements:
     lk=e["settings"].get("link")
     if isinstance(lk,dict) and lk.get("url")=="/": lk["url"]=APP
 
-# ── 3) globalClasses + ensamblado (formato copiar/pegar de Bricks) ──
-global_classes=[{"id":cid,"name":nm,"settings":{}} for nm,cid in gc.items()]
+# ── 3) globalClasses (cada clase con su CSS) + ensamblado (copiar/pegar) ──
+global_classes=[]
+for nm,cid in gc.items():
+    rules=cls_css.get(nm)
+    settings={"_cssCustom":"\n".join(rules)} if rules else {}
+    global_classes.append({"id":cid,"name":nm,"settings":settings})
 template={
   "content":elements,
   "source":"bricksCopiedElements",
