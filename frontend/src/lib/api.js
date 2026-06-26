@@ -6,6 +6,15 @@ export async function getDistritos() {
   return r.json();
 }
 
+export async function lookupUrl(url) {
+  const r = await fetch("/api/lookup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+  return r.json();
+}
+
 export async function valuar(payload) {
   const r = await fetch("/api/valuar", {
     method: "POST",
@@ -42,6 +51,11 @@ export const TIPO_MAP = {
   "Local comercial": "local",
   "Terreno": "terreno",
 };
+
+// property_type del backend → etiqueta del chip
+export const TIPO_REVERSE = Object.fromEntries(
+  Object.entries(TIPO_MAP).map(([label, value]) => [value, label])
+);
 
 export function slugify(s) {
   return String(s)

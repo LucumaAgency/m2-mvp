@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  getDistritos, valuar, TC_REF, DISTRITOS_FALLBACK, TIPO_MAP, slugify,
+  getDistritos, valuar, lookupUrl, TC_REF, DISTRITOS_FALLBACK,
+  TIPO_MAP, TIPO_REVERSE, slugify,
 } from "./lib/api.js";
 
 const STEPS = ["Ubicación", "Características", "Precio"];
@@ -20,17 +21,57 @@ export default function Valuador() {
     dorm: "3", moneda: "S/ soles", precio: "620000", intent: "comprar",
   });
   const [urlBadge, setUrlBadge] = useState(false);
+  const [urlStatus, setUrlStatus] = useState(null); // "buscando" | "ok" | "no" | null
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const lookupTimer = useRef(null);
+  const distritosRef = useRef(distritos);
 
   useEffect(() => {
     getDistritos()
-      .then((d) => { if (d?.districts?.length) setDistritos(d.districts); })
+      .then((d) => { if (d?.districts?.length) { setDistritos(d.districts); distritosRef.current = d.districts; } })
       .catch(() => { /* se queda con el fallback */ });
   }, []);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  // Pega un link de Urbania → busca en la base y autocompleta el formulario.
+  function onUrlInput(v) {
+    const isUrl = v.length > 12 && /urbania|nexo|adondevivir|^https?:/i.test(v);
+    setUrlBadge(false);
+    setUrlStatus(null);
+    if (lookupTimer.current) clearTimeout(lookupTimer.current);
+    if (!isUrl) return;
+    setUrlStatus("buscando");
+    lookupTimer.current = setTimeout(async () => {
+      try {
+        const r = await lookupUrl(v.trim());
+        if (!r.found) { setUrlStatus("no"); return; }
+        autofill(r.listing);
+        setUrlBadge(true);
+        setUrlStatus("ok");
+      } catch { setUrlStatus("no"); }
+    }, 600);
+  }
+
+  function autofill(L) {
+    setForm((f) => {
+      const next = { ...f };
+      if (L.district) {
+        const match = distritosRef.current.find(
+          (d) => d.name?.toLowerCase() === L.district.toLowerCase()
+        );
+        next.distrito = match ? (match.slug || slugify(match.name)) : slugify(L.district);
+      }
+      if (L.propertyType && TIPO_REVERSE[L.propertyType]) next.tipo = TIPO_REVERSE[L.propertyType];
+      if (L.area) { next.areaConst = String(Math.round(L.area)); next.areaTotal = String(Math.round(L.area)); }
+      if (L.bedrooms != null) next.dorm = L.bedrooms >= 5 ? "5 o más" : String(L.bedrooms);
+      if (L.price != null) next.precio = String(Math.round(L.price));
+      if (L.currency) next.moneda = L.currency === "USD" ? "USD dólares" : "S/ soles";
+      return next;
+    });
+  }
 
   async function evaluar() {
     setError(null);
@@ -67,7 +108,7 @@ export default function Valuador() {
   return (
     <>
       <nav>
-        <span className="logo">valua<span>dor</span>.pe</span>
+        <span className="logo">m2<span>peru</span>.com</span>
         <Link to="/inversion" className="nav-link">Calculadora de inversión →</Link>
       </nav>
 
@@ -107,12 +148,15 @@ export default function Valuador() {
               <span className="field-hint">Copia la URL de Urbania, Nexo o cualquier portal inmobiliario</span>
               <div className="url-wrap">
                 <input type="url" placeholder="https://urbania.pe/inmueble/..." autoComplete="off"
-                  onChange={(e) => { const v = e.target.value; setUrlBadge(v.length > 12 && (v.startsWith("http") || v.includes("urbania") || v.includes("nexo"))); }} />
+                  onChange={(e) => onUrlInput(e.target.value)} />
                 <div className={`url-detected ${urlBadge ? "show" : ""}`}>
                   <svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7l3 3 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   Autodetectado
                 </div>
               </div>
+              {urlStatus === "buscando" && <span className="field-hint" style={{ marginTop: 6 }}>Buscando la propiedad…</span>}
+              {urlStatus === "ok" && <span className="field-hint" style={{ marginTop: 6, color: "var(--green)" }}>✓ Datos cargados. Revisa y continúa.</span>}
+              {urlStatus === "no" && <span className="field-hint" style={{ marginTop: 6 }}>No encontramos esa propiedad en nuestra base. Ingresa los datos a mano.</span>}
             </div>
 
             <div className="or-divider">
@@ -263,7 +307,7 @@ function Resultado({ result, form, onReset }) {
   return (
     <>
       <nav>
-        <span className="logo">valua<span>dor</span>.pe</span>
+        <span className="logo">m2<span>peru</span>.com</span>
         <a className="nav-link" onClick={onReset} style={{ cursor: "pointer" }}>← Nueva evaluación</a>
       </nav>
       <div className="card" style={{ maxWidth: 560 }}>

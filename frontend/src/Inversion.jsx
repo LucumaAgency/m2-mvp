@@ -63,7 +63,7 @@ export default function Inversion() {
   return (
     <>
       <nav>
-        <span className="logo">valua<span>dor</span>.pe</span>
+        <span className="logo">m2<span>peru</span>.com</span>
         <Link to="/" className="nav-link">← Volver al valuador</Link>
       </nav>
 

@@ -180,3 +180,55 @@ function round(n, decimals = 2) {
   const p = Math.pow(10, decimals);
   return Math.round(n * p) / p;
 }
+
+// Busca una propiedad ya scrapeada por su URL para autocompletar el formulario.
+// Canonicaliza la URL igual que el scraper (scheme + host + path, sin query ni
+// fragment) y prueba variantes con/sin slash final. Si no está en la base,
+// devuelve { found: false } y el usuario llena a mano.
+export async function lookupListing(rawUrl) {
+  let canonical;
+  try {
+    const u = new URL(String(rawUrl).trim());
+    if (!/urbania|nexo|adondevivir/i.test(u.host)) {
+      return { found: false, reason: "portal_no_soportado" };
+    }
+    canonical = `${u.protocol}//${u.host}${u.pathname}`;
+  } catch {
+    return { found: false, reason: "url_invalida" };
+  }
+
+  const noSlash = canonical.replace(/\/$/, "");
+  const variants = [canonical, noSlash, noSlash + "/"];
+
+  const doc = await getListings().findOne(
+    { url: { $in: variants } },
+    {
+      projection: {
+        _id: 0, url: 1, operation: 1, property_type: 1,
+        area_total_m2: 1, area_covered_m2: 1, bedrooms: 1, bathrooms: 1,
+        parking: 1, price: 1, currency: 1, price_usd: 1,
+        "address.district": 1, title: 1,
+      },
+    }
+  );
+
+  if (!doc) return { found: false, reason: "no_en_base" };
+
+  return {
+    found: true,
+    listing: {
+      url: doc.url,
+      operation: doc.operation || "venta",
+      propertyType: doc.property_type || null,
+      district: doc.address?.district || null,
+      area: doc.area_total_m2 ?? doc.area_covered_m2 ?? null,
+      bedrooms: doc.bedrooms ?? null,
+      bathrooms: doc.bathrooms ?? null,
+      parking: doc.parking ?? null,
+      price: doc.price ?? null,
+      currency: doc.currency ?? null,
+      priceUsd: doc.price_usd ?? null,
+      title: doc.title ?? null,
+    },
+  };
+}
