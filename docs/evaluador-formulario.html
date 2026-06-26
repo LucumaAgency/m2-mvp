@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluar propiedad — Valuador PE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:        #0B6E4F;
+  --green-light:  #E8F5F0;
+  --green-mid:    #C2E5D8;
+  --green-text:   #074535;
+  --ink:          #0F1117;
+  --ink-60:       #6B6B6B;
+  --ink-30:       #ADADAD;
+  --bg:           #F5F5F3;
+  --surface:      #FFFFFF;
+  --border:       #E2E2DE;
+  --border-focus: #0B6E4F;
+  --danger:       #C0392B;
+  --radius-sm:    6px;
+  --radius-md:    10px;
+  --radius-lg:    14px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px 80px;
+}
+
+/* ── Nav ── */
+nav {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+}
+.logo {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.logo span { color: var(--green); }
+.nav-link {
+  font-size: 13px;
+  color: var(--ink-60);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: var(--ink); }
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  width: 100%;
+  max-width: 560px;
+  overflow: hidden;
+}
+
+/* ── Progress header ── */
+.progress-header {
+  padding: 20px 28px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.step-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.step-num.done    { background: var(--green); color: #fff; }
+.step-num.active  { background: var(--ink);   color: #fff; }
+.step-num.pending { background: var(--bg); color: var(--ink-30); border: 1px solid var(--border); }
+.step-name {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.step-name.done    { color: var(--green); }
+.step-name.active  { color: var(--ink); }
+.step-name.pending { color: var(--ink-30); }
+.step-connector {
+  flex: 1;
+  height: 1px;
+  margin: 0 10px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.step-connector.done { background: var(--green); }
+
+/* ── Panel body ── */
+.panel-body {
+  padding: 28px 28px 24px;
+}
+.panel { display: none; }
+.panel.active { display: block; }
+
+.panel-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.panel-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.panel-sub {
+  font-size: 13px;
+  color: var(--ink-60);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* ── Fields ── */
+.field { margin-bottom: 16px; }
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.field-label .optional {
+  font-weight: 400;
+  color: var(--ink-30);
+  font-size: 12px;
+  margin-left: 4px;
+}
+.field-hint {
+  font-size: 11px;
+  color: var(--ink-60);
+  margin-bottom: 7px;
+  display: block;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(11,110,79,0.12);
+}
+input::placeholder { color: var(--ink-30); }
+select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6B6B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+/* ── URL input with badge ── */
+.url-wrap { position: relative; }
+.url-wrap input { padding-right: 90px; }
+.url-detected {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-text);
+  background: var(--green-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: none;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.url-detected.show { display: flex; }
+.url-detected svg { width: 12px; height: 12px; }
+
+/* ── OR divider ── */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+}
+.or-divider-line { flex: 1; height: 1px; background: var(--border); }
+.or-divider-text { font-size: 11px; font-weight: 500; color: var(--ink-30); }
+
+/* ── Chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-60);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  line-height: 1;
+}
+.chip:hover { border-color: var(--ink-30); color: var(--ink); }
+.chip.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.chip.green-on {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+/* ── Price field ── */
+.price-wrap { display: grid; grid-template-columns: 110px 1fr; gap: 8px; }
+.market-ref {
+  margin-top: 10px;
+  padding: 10px 13px;
+  background: var(--green-light);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.market-ref-label {
+  font-size: 12px;
+  color: var(--green-text);
+}
+.market-ref-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-text);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Intention radio ── */
+.intent-group { display: flex; flex-direction: column; gap: 8px; }
+.intent-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.intent-option:hover { border-color: var(--ink-30); }
+.intent-option.on { border-color: var(--green); background: var(--green-light); }
+.intent-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.intent-option.on .intent-icon { background: var(--green-mid); }
+.intent-text { flex: 1; }
+.intent-title { font-size: 13px; font-weight: 500; color: var(--ink); }
+.intent-desc { font-size: 11px; color: var(--ink-60); margin-top: 1px; }
+.intent-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.intent-option.on .intent-radio {
+  border-color: var(--green);
+  background: var(--green);
+}
+.intent-radio::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  display: none;
+}
+.intent-option.on .intent-radio::after { display: block; }
+
+/* ── CTA area ── */
+.cta-area {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.btn-eval {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: var(--green);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: -0.01em;
+}
+.btn-eval:hover { background: #085a40; }
+.btn-eval:active { transform: scale(0.99); }
+.btn-eval svg { width: 18px; height: 18px; }
+
+/* ── Free counter ── */
+.free-counter {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.free-label {
+  font-size: 11px;
+  color: var(--ink-60);
+}
+.free-dots {
+  display: flex;
+  gap: 5px;
+}
+.free-dot {
+  width: 20px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--green);
+  transition: background 0.2s;
+}
+.free-dot.used { background: var(--border); }
+
+/* ── Trust bar ── */
+.trust-bar {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--ink-60);
+}
+.trust-item svg { width: 13px; height: 13px; color: var(--ink-30); flex-shrink: 0; }
+
+/* ── Nav buttons ── */
+.btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-60);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.15s;
+}
+.btn-back:hover { color: var(--ink); }
+.btn-back svg { width: 15px; height: 15px; }
+.btn-next {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--ink);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-next:hover { background: #222; }
+.btn-next svg { width: 15px; height: 15px; }
+
+/* ── Section divider ── */
+.section-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* ── Bottom note ── */
+.bottom-note {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-60);
+  max-width: 560px;
+}
+.bottom-note a { color: var(--green); text-decoration: none; }
+.bottom-note a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .row-2, .row-3 { grid-template-columns: 1fr; }
+  .price-wrap { grid-template-columns: 1fr; }
+  .panel-body { padding: 20px 16px 18px; }
+  .progress-header { padding: 16px; }
+  .step-name { display: none; }
+  .trust-bar { gap: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">valua<span>dor</span>.pe</span>
+  <a href="#" class="nav-link">¿Cómo funciona?</a>
+</nav>
+
+<div class="card">
+
+  <!-- Progress -->
+  <div class="progress-header">
+    <div class="step-track">
+      <div class="step-item" onclick="goStep(1)" role="button" aria-label="Ir al paso 1: Ubicación">
+        <div class="step-num active" id="dot-1">1</div>
+        <span class="step-name active" id="lbl-1">Ubicación</span>
+      </div>
+      <div class="step-connector" id="conn-1"></div>
+      <div class="step-item" onclick="goStep(2)" role="button" aria-label="Ir al paso 2: Características">
+        <div class="step-num pending" id="dot-2">2</div>
+        <span class="step-name pending" id="lbl-2">Características</span>
+      </div>
+      <div class="step-connector" id="conn-2"></div>
+      <div class="step-item" onclick="goStep(3)" role="button" aria-label="Ir al paso 3: Precio">
+        <div class="step-num pending" id="dot-3">3</div>
+        <span class="step-name pending" id="lbl-3">Precio</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-body">
+
+    <!-- ── PASO 1: UBICACIÓN ── -->
+    <div class="panel active" id="panel-1">
+      <p class="panel-eyebrow">Paso 1 de 3</p>
+      <h1 class="panel-title">¿Cuál es la propiedad?</h1>
+      <p class="panel-sub">Pega el link del portal y llenamos los datos automáticamente, o ingrésalos tú.</p>
+
+      <div class="field">
+        <label class="field-label" for="url-input">Link de la propiedad</label>
+        <span class="field-hint">Copia la URL de Urbania, Nexo o cualquier portal inmobiliario</span>
+        <div class="url-wrap">
+          <input type="url" id="url-input" placeholder="https://urbania.pe/inmueble/..." autocomplete="off" oninput="checkUrl(this.value)">
+          <div class="url-detected" id="url-badge">
+            <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7l3 3 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Autodetectado
+          </div>
+        </div>
+      </div>
+
+      <div class="or-divider">
+        <div class="or-divider-line"></div>
+        <span class="or-divider-text">o ingresa manualmente</span>
+        <div class="or-divider-line"></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="dept">Departamento</label>
+        <select id="dept" onchange="updateDistritos()">
+          <option value="">Selecciona un departamento</option>
+          <option value="lima" selected>Lima</option>
+          <option value="arequipa">Arequipa</option>
+          <option value="lalibertad">La Libertad</option>
+          <option value="piura">Piura</option>
+          <option value="cusco">Cusco</option>
+          <option value="junin">Junín</option>
+          <option value="lambayeque">Lambayeque</option>
+        </select>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label" for="provincia">Provincia</label>
+          <select id="provincia">
+            <option>Lima</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="distrito">Distrito</label>
+          <select id="distrito">
+            <option value="">Selecciona distrito</option>
+            <option>Miraflores</option>
+            <option>San Isidro</option>
+            <option>Barranco</option>
+            <option>Surco</option>
+            <option>La Molina</option>
+            <option>San Borja</option>
+            <option>Jesús María</option>
+            <option>Lince</option>
+            <option>Magdalena</option>
+            <option>Pueblo Libre</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Tipo de propiedad</label>
+        <div class="chips">
+          <span class="chip on" onclick="toggleChip(this, 'tipo')">Departamento</span>
+          <span class="chip" onclick="toggleChip(this, 'tipo')">Casa</span>
+          <span class="chip" onclick="toggleChip(this, 'tipo')">Oficina</span>
+          <span class="chip" onclick="toggleChip(this, 'tipo')">Local comercial</span>
+          <span class="chip" onclick="toggleChip(this, 'tipo')">Terreno</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <span></span>
+        <button class="btn-next" onclick="goStep(2)" aria-label="Continuar al paso 2">
+          Continuar
+          <svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M5.5 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── PASO 2: CARACTERÍSTICAS ── -->
+    <div class="panel" id="panel-2">
+      <p class="panel-eyebrow">Paso 2 de 3</p>
+      <h1 class="panel-title">Características del inmueble</h1>
+      <p class="panel-sub">Mientras más datos ingreses, más preciso será el score.</p>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label" for="area-total">Área total (m²)</label>
+          <input type="number" id="area-total" placeholder="ej: 90" min="10" max="2000">
+        </div>
+        <div class="field">
+          <label class="field-label" for="area-const">Área construida (m²)</label>
+          <input type="number" id="area-const" placeholder="ej: 80" min="10" max="2000">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Dormitorios</label>
+        <div class="chips">
+          <span class="chip" onclick="toggleChip(this, 'dorm')">1</span>
+          <span class="chip" onclick="toggleChip(this, 'dorm')">2</span>
+          <span class="chip on" onclick="toggleChip(this, 'dorm')">3</span>
+          <span class="chip" onclick="toggleChip(this, 'dorm')">4</span>
+          <span class="chip" onclick="toggleChip(this, 'dorm')">5 o más</span>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label">Baños</label>
+          <div class="chips">
+            <span class="chip" onclick="toggleChip(this, 'ban')">1</span>
+            <span class="chip on" onclick="toggleChip(this, 'ban')">2</span>
+            <span class="chip" onclick="toggleChip(this, 'ban')">3 o más</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Estacionamientos</label>
+          <div class="chips">
+            <span class="chip" onclick="toggleChip(this, 'est')">0</span>
+            <span class="chip on" onclick="toggleChip(this, 'est')">1</span>
+            <span class="chip" onclick="toggleChip(this, 'est')">2 o más</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label" for="antiguedad">Antigüedad</label>
+          <select id="antiguedad">
+            <option>A estrenar</option>
+            <option>1 – 5 años</option>
+            <option selected>6 – 15 años</option>
+            <option>16 – 30 años</option>
+            <option>Más de 30 años</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="piso">Piso</label>
+          <select id="piso">
+            <option>1°</option>
+            <option>2° – 4°</option>
+            <option selected>5° – 10°</option>
+            <option>11° o superior</option>
+            <option>Penthouse</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-sep"></div>
+
+      <div class="field">
+        <label class="field-label">
+          Extras y amenidades
+          <span class="optional">(opcional)</span>
+        </label>
+        <div class="chips">
+          <span class="chip" onclick="this.classList.toggle('on')">Terraza</span>
+          <span class="chip on" onclick="this.classList.toggle('on')">Gimnasio</span>
+          <span class="chip" onclick="this.classList.toggle('on')">Piscina</span>
+          <span class="chip" onclick="this.classList.toggle('on')">Vista al mar</span>
+          <span class="chip" onclick="this.classList.toggle('on')">Conserje 24h</span>
+          <span class="chip" onclick="this.classList.toggle('on')">Área de niños</span>
+          <span class="chip" onclick="this.classList.toggle('on')">Coworking</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(1)">
+          <svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M9.5 3.5l-4 4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Atrás
+        </button>
+        <button class="btn-next" onclick="goStep(3)">
+          Continuar
+          <svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M5.5 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── PASO 3: PRECIO ── -->
+    <div class="panel" id="panel-3">
+      <p class="panel-eyebrow">Paso 3 de 3</p>
+      <h1 class="panel-title">¿Cuánto piden por la propiedad?</h1>
+      <p class="panel-sub">Comparamos este precio con el mercado y calculamos el score al instante.</p>
+
+      <div class="field">
+        <label class="field-label" for="precio">Precio de venta</label>
+        <div class="price-wrap">
+          <select id="moneda">
+            <option>S/ soles</option>
+            <option>USD dólares</option>
+          </select>
+          <input type="number" id="precio" placeholder="ej: 650 000" value="620000" min="1" oninput="updateMarket()">
+        </div>
+        <div class="market-ref" id="market-ref">
+          <span class="market-ref-label">Rango de mercado para Miraflores · 3 dorm · 80 m²</span>
+          <span class="market-ref-value" id="market-val">S/ 580k – 690k</span>
+        </div>
+      </div>
+
+      <div class="section-sep"></div>
+
+      <div class="field">
+        <label class="field-label">¿Para qué evaluás?</label>
+        <div class="intent-group">
+          <div class="intent-option on" onclick="selectIntent(this)" role="radio" aria-checked="true">
+            <div class="intent-icon">🏠</div>
+            <div class="intent-text">
+              <div class="intent-title">Quiero comprar esta propiedad</div>
+              <div class="intent-desc">Evalúo si el precio es justo antes de negociar</div>
+            </div>
+            <div class="intent-radio"></div>
+          </div>
+          <div class="intent-option" onclick="selectIntent(this)" role="radio" aria-checked="false">
+            <div class="intent-icon">💰</div>
+            <div class="intent-text">
+              <div class="intent-title">Quiero vender una propiedad mía</div>
+              <div class="intent-desc">Busco el precio ideal para publicar</div>
+            </div>
+            <div class="intent-radio"></div>
+          </div>
+          <div class="intent-option" onclick="selectIntent(this)" role="radio" aria-checked="false">
+            <div class="intent-icon">📊</div>
+            <div class="intent-text">
+              <div class="intent-title">Solo quiero conocer el valor de mercado</div>
+              <div class="intent-desc">Referencia o inversión a futuro</div>
+            </div>
+            <div class="intent-radio"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-area">
+        <button class="btn-eval" onclick="alert('Aquí iría la pantalla de resultados con el score A–F')">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 3v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 2a8 8 0 100 16A8 8 0 0010 2z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Evaluar propiedad gratis
+        </button>
+
+        <div class="free-counter">
+          <span class="free-label">Evaluaciones gratuitas restantes este mes</span>
+          <div class="free-dots">
+            <div class="free-dot used" title="Usada"></div>
+            <div class="free-dot" title="Disponible"></div>
+            <div class="free-dot" title="Disponible"></div>
+          </div>
+        </div>
+
+        <div class="trust-bar">
+          <div class="trust-item">
+            <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1l1.5 4H13l-3.5 2.5L11 12 7 9.5 3 12l1.5-4.5L1 5h4.5L7 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            +14,000 propiedades analizadas
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1.5L2 4v4c0 2.5 2.2 4.8 5 5.5 2.8-.7 5-3 5-5.5V4L7 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            Datos seguros y privados
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1v3M7 13v-3M1 7h3M13 7h-3M3 3l2 2M9 9l2 2M3 11l2-2M9 5l2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Data actualizada mensualmente
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top: 16px;">
+        <button class="btn-back" onclick="goStep(2)">
+          <svg viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M9.5 3.5l-4 4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Atrás
+        </button>
+        <span style="font-size:12px; color: var(--ink-60);">Sin tarjeta de crédito</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p class="bottom-note">
+  Al continuar aceptas los <a href="#">Términos de uso</a> y la <a href="#">Política de privacidad</a>.
+  <br>Los resultados son estimaciones basadas en data de mercado público.
+</p>
+
+<script>
+let currentStep = 1;
+
+function goStep(n) {
+  [1, 2, 3].forEach(i => {
+    const panel = document.getElementById('panel-' + i);
+    const dot   = document.getElementById('dot-' + i);
+    const lbl   = document.getElementById('lbl-' + i);
+
+    panel.classList.toggle('active', i === n);
+
+    if (i < n) {
+      dot.className = 'step-num done';
+      dot.textContent = '✓';
+      lbl.className = 'step-name done';
+    } else if (i === n) {
+      dot.className = 'step-num active';
+      dot.textContent = i;
+      lbl.className = 'step-name active';
+    } else {
+      dot.className = 'step-num pending';
+      dot.textContent = i;
+      lbl.className = 'step-name pending';
+    }
+  });
+
+  [1, 2].forEach(i => {
+    const conn = document.getElementById('conn-' + i);
+    conn.className = 'step-connector' + (i < n ? ' done' : '');
+  });
+
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleChip(el, group) {
+  const parent = el.closest('.chips');
+  parent.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function checkUrl(val) {
+  const badge = document.getElementById('url-badge');
+  const isUrl = val.length > 12 && (val.startsWith('http') || val.includes('urbania') || val.includes('nexo'));
+  badge.classList.toggle('show', isUrl);
+}
+
+function selectIntent(el) {
+  document.querySelectorAll('.intent-option').forEach(o => {
+    o.classList.remove('on');
+    o.setAttribute('aria-checked', 'false');
+  });
+  el.classList.add('on');
+  el.setAttribute('aria-checked', 'true');
+}
+
+function updateMarket() {
+  const precio = parseInt(document.getElementById('precio').value) || 0;
+  const el = document.getElementById('market-val');
+  if (precio > 0) {
+    const lo = Math.round(precio * 0.9 / 1000) * 1000;
+    const hi = Math.round(precio * 1.1 / 1000) * 1000;
+    el.textContent = 'S/ ' + (lo/1000).toFixed(0) + 'k – ' + (hi/1000).toFixed(0) + 'k';
+  }
+}
+
+function updateDistritos() {
+  const dept = document.getElementById('dept').value;
+  const distritos = {
+    lima:        ['Miraflores','San Isidro','Barranco','Surco','La Molina','San Borja','Jesús María','Lince','Magdalena','Pueblo Libre'],
+    arequipa:    ['Cercado','Cayma','Yanahuara','José L. Bustamante','Sachaca','Selva Alegre'],
+    lalibertad:  ['Trujillo','Víctor Larco','Florencia de Mora','El Porvenir'],
+    piura:       ['Piura','Castilla','Catacaos','La Unión'],
+    cusco:       ['Cusco','San Sebastián','Santiago','Wanchaq'],
+    junin:       ['Huancayo','Chilca','El Tambo','Concepción'],
+    lambayeque:  ['Chiclayo','La Victoria','José L. Ortiz','Lambayeque'],
+  };
+  const sel = document.getElementById('distrito');
+  sel.innerHTML = '<option value="">Selecciona distrito</option>';
+  (distritos[dept] || []).forEach(d => {
+    const opt = document.createElement('option');
+    opt.textContent = d;
+    sel.appendChild(opt);
+  });
+}
+</script>
+</body>
+</html>
