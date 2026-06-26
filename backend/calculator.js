@@ -274,6 +274,56 @@ export function calcularInversion(raw) {
   else if (mejorAnual < o.depositoPlazo) verdict = "BAJO_DEPOSITO";
   else verdict = "RENTABLE";
 
+  // Alerta de "descarte rápido" reformulada (antes: plusvalía vs inflación a secas).
+  // Dos chequeos, no uno:
+  //  1. PISO (poder adquisitivo): ¿la plusvalía anual le gana a la inflación?
+  //     Usa el mejor caso de plusvalía: si ni el optimista supera la inflación,
+  //     la apreciación nominal está engañando.
+  //  2. VALLA (decisión): ¿el retorno total real le gana a un depósito a plazo?
+  //     Usa el retorno total anualizado del modelo (incluye alquiler y financiamiento),
+  //     no la plusvalía sola.
+  const plusvaliaSuperaInflacion = plusvaliaOptimista.anualizada >= infAnualPeriodo;
+  const retornoSuperaDeposito = mejorAnual >= o.depositoPlazo;
+  // Retorno bruto aproximado (apreciación + alquiler neto) para contexto rápido.
+  const retornoTotalAprox = plusvaliaConservador.anualizada + netCapRate;
+
+  let alertaNivel, alertaMensaje;
+  if (!plusvaliaSuperaInflacion && !retornoSuperaDeposito) {
+    alertaNivel = "rojo";
+    alertaMensaje =
+      "Doble alerta: la plusvalía no le gana a la inflación y el retorno total tampoco supera un depósito a plazo sin riesgo. Difícil que compense el riesgo de invertir.";
+  } else if (!plusvaliaSuperaInflacion) {
+    alertaNivel = "amarillo";
+    alertaMensaje =
+      "La plusvalía sola no le gana a la inflación: la apreciación pierde poder adquisitivo. Lo que sostiene el caso es el alquiler, no el precio. Revisa que el flujo aguante.";
+  } else if (!retornoSuperaDeposito) {
+    alertaNivel = "amarillo";
+    alertaMensaje =
+      "La plusvalía supera la inflación, pero sumando alquiler el retorno total no le gana a un depósito a plazo sin riesgo.";
+  } else {
+    alertaNivel = "verde";
+    alertaMensaje =
+      "La plusvalía supera la inflación y el retorno total (con alquiler) le gana a un depósito a plazo.";
+  }
+
+  const descarteRapido = {
+    nivel: alertaNivel,
+    mensaje: alertaMensaje,
+    piso: {
+      plusvaliaAnualConservador: round(plusvaliaConservador.anualizada, 4),
+      plusvaliaAnualOptimista: round(plusvaliaOptimista.anualizada, 4),
+      inflacionAnual: round(infAnualPeriodo, 4),
+      superaInflacion: plusvaliaSuperaInflacion,
+    },
+    valla: {
+      retornoTotalAnual: round(mejorAnual, 4),
+      retornoTotalAprox: round(retornoTotalAprox, 4),
+      depositoPlazo: o.depositoPlazo,
+      costoOportunidad: o.costoOportunidad,
+      superaDeposito: retornoSuperaDeposito,
+    },
+  };
+
   return {
     ok: true,
     modo: financiado ? "financiado" : "contado",
@@ -342,6 +392,7 @@ export function calcularInversion(raw) {
       contadoOptimista: costoOportunidad((precioCompra + Number(o.gastosNotariales || 0)) * (1 + infAcum), escenarios.contado.optimista.utilidadTotal),
       contadoConservador: costoOportunidad((precioCompra + Number(o.gastosNotariales || 0)) * (1 + infAcum), escenarios.contado.conservador.utilidadTotal),
     },
+    descarteRapido,
     verdict,
   };
 }

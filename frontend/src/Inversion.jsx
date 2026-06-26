@@ -139,9 +139,11 @@ function Resultado({ res }) {
   return (
     <div className="card" style={{ maxWidth: 560, marginTop: 20 }}>
       <div className="panel-body">
-        <div style={{ padding: "12px 14px", borderRadius: 10, background: ui.color, color: "#fff", marginBottom: 18, fontSize: 14, fontWeight: 500 }}>
+        <div style={{ padding: "12px 14px", borderRadius: 10, background: ui.color, color: "#fff", marginBottom: 16, fontSize: 14, fontWeight: 500 }}>
           {ui.txt}
         </div>
+
+        <AlertaDescarte d={res.descarteRapido} />
 
         <p className="panel-eyebrow">Resumen del periodo</p>
         <div className="row-3" style={{ marginBottom: 16 }}>
@@ -177,6 +179,28 @@ function Resultado({ res }) {
         <p className="field-hint" style={{ marginTop: 6 }}>
           Capital propio invertido (real): {soles(res.capital.real)} · perdido solo por inflación: {soles(res.capital.perdidaPorInflacion)}.
         </p>
+      </div>
+    </div>
+  );
+}
+
+const ALERTA = {
+  rojo:     { bg: "#FBEAE8", border: "#C0392B", ink: "#8E2A20", icon: "⛔" },
+  amarillo: { bg: "#FBF3E0", border: "#B8860B", ink: "#7A5A06", icon: "⚠️" },
+  verde:    { bg: "#E8F5F0", border: "#0B6E4F", ink: "#074535", icon: "✅" },
+};
+
+function AlertaDescarte({ d }) {
+  if (!d) return null;
+  const c = ALERTA[d.nivel] || ALERTA.amarillo;
+  const Check = ({ ok }) => <span style={{ color: ok ? "#0B6E4F" : "#C0392B", fontWeight: 700 }}>{ok ? "✓" : "✗"}</span>;
+  return (
+    <div style={{ background: c.bg, borderLeft: `3px solid ${c.border}`, borderRadius: 8, padding: "12px 14px", marginBottom: 18 }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: c.ink, marginBottom: 8 }}>{c.icon} Descarte rápido</div>
+      <div style={{ fontSize: 13, color: c.ink, lineHeight: 1.45, marginBottom: 10 }}>{d.mensaje}</div>
+      <div style={{ fontSize: 12.5, color: "var(--ink)", display: "grid", gap: 4 }}>
+        <div><Check ok={d.piso.superaInflacion} /> Piso: plusvalía {pct(d.piso.plusvaliaAnualOptimista)} vs inflación {pct(d.piso.inflacionAnual)}</div>
+        <div><Check ok={d.valla.superaDeposito} /> Valla: retorno total {pct(d.valla.retornoTotalAnual)} vs depósito a plazo {pct(d.valla.depositoPlazo)}</div>
       </div>
     </div>
   );

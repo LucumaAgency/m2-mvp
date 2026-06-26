@@ -88,3 +88,12 @@ test("flujo de alquiler no es autosuficiente (déficit mensual)", () => {
   assert.equal(r.alquiler.autosuficiente, false);
   assert.ok(approx(r.alquiler.flujoNetoMensual, -127.6, 0.5));                                    // C111
 });
+
+test("descarte rápido: Surquillo dispara doble alerta (rojo)", () => {
+  const r = calcularInversion(SURQUILLO);
+  // Plusvalía optimista (~3.8%) < inflación del periodo (~4.06%)
+  assert.equal(r.descarteRapido.piso.superaInflacion, false);
+  // Retorno total real < depósito a plazo (4.5%)
+  assert.equal(r.descarteRapido.valla.superaDeposito, false);
+  assert.equal(r.descarteRapido.nivel, "rojo");
+});
