@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { calcular } from "./lib/api.js";
 
 // Pre-llenado con el caso real del Excel para que funcione de inmediato.
@@ -40,8 +40,25 @@ const VERDICT_UI = {
 const soles = (n) => "S/. " + (n ?? 0).toLocaleString("es-PE", { maximumFractionDigits: 0 });
 const pct = (n) => (n == null ? "—" : (n * 100).toFixed(1) + "%");
 
+// Mezcla los datos que llegan del valuador (precio de compra y m²) sobre el
+// caso de ejemplo. Deriva los precios de venta del precio de compra para que
+// el escenario sea coherente; el usuario los puede ajustar.
+function buildInitial(state) {
+  if (!state || (!state.precioCompra && !state.area)) return DEFAULTS;
+  const f = { ...DEFAULTS };
+  if (state.area) f.area = state.area;
+  if (state.precioCompra) {
+    f.precioCompra = state.precioCompra;
+    f.precioVentaConservador = Math.round(state.precioCompra);
+    f.precioVentaOptimista = Math.round(state.precioCompra * 1.1);
+  }
+  return f;
+}
+
 export default function Inversion() {
-  const [form, setForm] = useState(DEFAULTS);
+  const { state } = useLocation();
+  const [form, setForm] = useState(() => buildInitial(state));
+  const fromValuador = Boolean(state && (state.precioCompra || state.area));
   const [res, setRes] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errs, setErrs] = useState(null);
@@ -71,7 +88,13 @@ export default function Inversion() {
         <div className="panel-body">
           <p className="panel-eyebrow">Calculadora de inversión</p>
           <h1 className="panel-title">¿Realmente conviene esta propiedad?</h1>
-          <p className="panel-sub">Modelo que evalúa una inversión ya hecha: hipoteca, alquiler, plusvalía real y costo de oportunidad. Pre-llenado con un caso de ejemplo.</p>
+          <p className="panel-sub">Modelo que evalúa una inversión ya hecha: hipoteca, alquiler, plusvalía real y costo de oportunidad.{fromValuador ? "" : " Pre-llenado con un caso de ejemplo."}</p>
+
+          {fromValuador && (
+            <div className="market-ref" style={{ marginBottom: 16 }}>
+              <span className="market-ref-label">Tomamos el precio y los m² del valuador. Los demás campos son de ejemplo, ajústalos a tu caso.</span>
+            </div>
+          )}
 
           <div className="field">
             <label className="field-label">Tipo de compra</label>

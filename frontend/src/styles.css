@@ -167,6 +167,7 @@ nav {
 input[type="text"],
 input[type="url"],
 input[type="number"],
+input[type="date"],
 select,
 textarea {
   width: 100%;
@@ -180,12 +181,27 @@ textarea {
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
   -webkit-appearance: none;
+  appearance: none;
 }
 input:focus, select:focus, textarea:focus {
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px rgba(11,110,79,0.12);
 }
 input::placeholder { color: var(--ink-30); }
+
+/* Inputs de fecha: alto consistente y ícono de calendario en verde de marca */
+input[type="date"] {
+  min-height: 38px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  filter: invert(28%) sepia(73%) saturate(560%) hue-rotate(118deg) brightness(94%) contrast(92%);
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+input[type="date"]::-webkit-datetime-edit { color: var(--ink); }
 select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6B6B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
 
 .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }

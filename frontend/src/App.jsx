@@ -242,6 +242,14 @@ function Resultado({ result, form, onReset }) {
   const ui = result.has_price ? VERDICT_UI[result.verdict] : null;
   const m = result.market;
 
+  // Datos que se llevan a la calculadora de inversión (precio en S/.).
+  const precioSoles = form.moneda.startsWith("USD") ? Number(form.precio) * TC_REF : Number(form.precio);
+  const areaInput = Number(form.areaConst || form.areaTotal) || null;
+  const invState = {
+    precioCompra: Math.round(precioSoles) || undefined,
+    area: areaInput || undefined,
+  };
+
   return (
     <>
       <nav>
@@ -284,7 +292,7 @@ function Resultado({ result, form, onReset }) {
           </p>
 
           <div className="section-sep" />
-          <Link to="/inversion" className="btn-next" style={{ justifyContent: "center", width: "100%" }}>
+          <Link to="/inversion" state={invState} className="btn-next" style={{ justifyContent: "center", width: "100%" }}>
             ¿Conviene como inversión? Calcúlalo →
           </Link>
         </div>
