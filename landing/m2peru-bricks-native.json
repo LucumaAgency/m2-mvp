@@ -1,0 +1,2601 @@
+[
+  {
+    "title": "m2peru — Landing (nativo)",
+    "bricksData": {
+      "content": [
+        {
+          "id": "me001",
+          "name": "section",
+          "parent": 0,
+          "children": [
+            "me002",
+            "me010",
+            "me042",
+            "me060",
+            "me085",
+            "me106",
+            "me124",
+            "me146",
+            "me164",
+            "me171"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl000"
+            ],
+            "tag": "section",
+            "_cssCustom": "%root%{\n    --green:#0B6E4F; --green-deep:#074535; --green-mid:#C2E5D8; --green-light:#E8F5F0;\n    --ink:#0F1117; --ink-60:#6B6B6B; --ink-30:#ADADAD; --bg:#F5F5F3; --surface:#FFFFFF;\n    --border:#E2E2DE; --rojo:#C0392B; --ambar:#B8860B;\n  }%root% *{box-sizing:border-box;margin:0;padding:0}%root%{scroll-behavior:smooth}%root%{font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased}%root% a{color:inherit;text-decoration:none}%root% .wrap{max-width:1080px;margin:0 auto;padding:0 32px}%root% h1, %root% h2, %root% h3{font-weight:800;letter-spacing:-.035em;line-height:1.08}%root% .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}%root% .sec{padding:96px 0}%root% .center{text-align:center}%root% .muted{color:var(--ink-60)}%root% .tnum{font-variant-numeric:tabular-nums}%root% .navbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}%root% .navbar .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}%root% .wordmark{font-weight:700;font-size:19px;letter-spacing:-.03em}%root% .wordmark .pe{color:var(--green)}%root% .nav-links{display:flex;align-items:center;gap:26px}%root% .nav-links a{font-size:14px;color:var(--ink-60);font-weight:500;transition:color .15s}%root% .nav-links a:hover{color:var(--ink)}%root% .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;border-radius:11px;padding:12px 22px;cursor:pointer;transition:transform .15s ease,background .15s ease,box-shadow .15s ease;border:none;font-family:inherit}%root% .btn-green{background:var(--green);color:#fff}%root% .btn-green:hover{background:var(--green-deep);transform:translateY(-2px);box-shadow:0 10px 24px rgba(11,110,79,.28)}%root% .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--border)}%root% .btn-ghost:hover{border-color:var(--ink-30)}%root% .btn-lg{padding:15px 28px;font-size:16px;border-radius:13px}@media(max-width:680px){.nav-links a.hide-sm{display:none}}%root% .hero{position:relative;overflow:hidden;padding:90px 0 80px}%root% .hero::before{content:\"\";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.6;\n    background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);\n    background-size:46px 46px;-webkit-mask:radial-gradient(120% 80% at 78% 8%,#000,transparent 72%);mask:radial-gradient(120% 80% at 78% 8%,#000,transparent 72%)}%root% .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}%root% .hero h1{font-size:clamp(38px,5.4vw,62px)}%root% .hero .sub{font-size:20px;color:var(--ink-60);margin-top:22px;max-width:520px}%root% .hero .cta-row{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}%root% .hero .trust{margin-top:22px;font-size:13px;color:var(--ink-60);display:flex;gap:18px;flex-wrap:wrap}%root% .hero .trust span{display:flex;align-items:center;gap:6px}%root% .hero .trust svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:2}%root% .badge-pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-light);color:var(--green-deep);font-size:13px;font-weight:600;padding:7px 14px;border-radius:99px;margin-bottom:22px}%root% .badge-pill .d{width:7px;height:7px;border-radius:50%;background:var(--green)}%root% .mock{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 1px 3px rgba(0,0,0,.06),0 18px 50px rgba(15,17,23,.10);padding:24px;position:relative}%root% .mock .top{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--border)}%root% .mock .top .wm{font-weight:700;font-size:15px;letter-spacing:-.03em}%root% .mock .top .wm .pe{color:var(--green)}%root% .mock .top .step{font-size:12px;color:var(--ink-60)}%root% .score-row{display:flex;gap:14px;align-items:center;margin-top:18px}%root% .scorebadge{width:60px;height:60px;border-radius:15px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;flex:none}%root% .score-row b{font-size:17px}%root% .score-row p{font-size:13px;color:var(--ink-60);margin-top:2px}%root% .pbar{height:11px;border-radius:6px;background:linear-gradient(90deg,var(--green-light),var(--green-mid),var(--green));position:relative;margin:30px 0 8px}%root% .pbar .mk{position:absolute;top:-24px;transform:translateX(-50%);font-size:11px;font-weight:700;white-space:nowrap}%root% .pbar .mk::after{content:\"\";position:absolute;left:50%;top:18px;width:2px;height:13px;background:var(--ink);transform:translateX(-50%)}%root% .pbar-x{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-60);font-weight:600}%root% .mini-alert{margin-top:18px;background:#FBEAE8;border-left:3px solid var(--rojo);border-radius:9px;padding:12px 14px}%root% .mini-alert .t{font-size:12px;font-weight:600;color:#8E2A20;margin-bottom:6px}%root% .mini-alert .l{font-size:12.5px;color:#8E2A20;display:flex;gap:7px;margin-top:3px}%root% .band{background:var(--green-deep);color:#fff}%root% .band .eyebrow{color:var(--green-mid)}%root% .band h2{font-size:clamp(28px,4vw,40px);color:#fff}%root% .band p{color:#A9CFC2}%root% .pain{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}%root% .pain .p{background:#0a3a2c;border-radius:16px;padding:26px}%root% .pain .p .q{font-size:30px}%root% .pain .p h3{font-size:17px;color:#fff;margin:12px 0 6px}%root% .pain .p p{font-size:14px}%root% .vp{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:48px}%root% .vcard{border:1px solid var(--border);border-radius:20px;padding:34px;background:var(--surface);transition:transform .2s ease,box-shadow .2s ease}%root% .vcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(15,17,23,.08)}%root% .vicon{width:52px;height:52px;border-radius:14px;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin-bottom:20px}%root% .vicon svg{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}%root% .vcard h3{font-size:23px}%root% .vcard p{font-size:15px;color:var(--ink-60);margin-top:10px}%root% .vcard ul{margin:18px 0 0;padding:0;list-style:none}%root% .vcard li{font-size:14px;display:flex;gap:10px;margin-bottom:9px}%root% .vcard li svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:2.2;flex:none;margin-top:2px}%root% .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}%root% .step{position:relative;padding-top:8px}%root% .step .n{width:38px;height:38px;border-radius:11px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}%root% .step h3{font-size:18px;margin:16px 0 6px}%root% .step p{font-size:14px;color:var(--ink-60)}%root% .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px}%root% .stat{background:var(--bg);border-radius:16px;padding:28px 20px;text-align:center}%root% .stat .n{font-weight:800;font-size:34px;letter-spacing:-.03em;color:var(--green-deep)}%root% .stat .l{font-size:13px;color:var(--ink-60);margin-top:6px}%root% .quote{font-size:clamp(24px,3.4vw,34px);font-weight:700;letter-spacing:-.02em;line-height:1.25;max-width:820px}%root% .quote .hl{color:var(--green-mid)}%root% .faq{max-width:760px;margin:44px auto 0}%root% .faq details{border-bottom:1px solid var(--border);padding:20px 0}%root% .faq summary{font-weight:600;font-size:17px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}%root% .faq summary::-webkit-details-marker{display:none}%root% .faq summary::after{content:\"+\";color:var(--green);font-weight:700;font-size:22px;line-height:1}%root% .faq details[open] summary::after{content:\"–\"}%root% .faq p{font-size:15px;color:var(--ink-60);margin-top:12px}%root% .cta-final{background:var(--green);color:#fff;border-radius:28px;padding:64px 40px;text-align:center;position:relative;overflow:hidden}%root% .cta-final::before{content:\"\";position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);background-size:34px 34px;-webkit-mask:radial-gradient(100% 100% at 50% 0%,#000,transparent 75%);mask:radial-gradient(100% 100% at 50% 0%,#000,transparent 75%)}%root% .cta-final .inner{position:relative;z-index:1}%root% .cta-final h2{font-size:clamp(28px,4vw,42px);color:#fff}%root% .cta-final p{color:#D6EFE7;font-size:18px;margin:16px auto 0;max-width:520px}%root% .cta-final .btn-white{background:#fff;color:var(--green-deep);margin-top:30px}%root% .cta-final .btn-white:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.2)}%root% .ftr{border-top:1px solid var(--border);padding:50px 0;margin-top:96px}%root% .ftr .row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}%root% .ftr .links{display:flex;gap:24px;font-size:14px;color:var(--ink-60)}%root% .ftr .copy{font-size:13px;color:var(--ink-30);margin-top:20px}%root% .section-head{max-width:680px}%root% .section-head h2{font-size:clamp(28px,4vw,42px);margin-top:14px}%root% .section-head p{font-size:18px;color:var(--ink-60);margin-top:16px}@media(max-width:860px){\n    .hero .wrap{grid-template-columns:1fr;gap:40px}\n    .vp,.pain,.steps,.stats{grid-template-columns:1fr}\n    .stats{grid-template-columns:repeat(2,1fr)}\n    .pain{grid-template-columns:1fr}\n  }@media (prefers-reduced-motion: reduce){%root% *{animation:none!important;transition:none!important}}%root% .lead-lg{font-size:18px;max-width:640px}%root% .vp-3{grid-template-columns:repeat(3,1fr)}@media(max-width:860px){%root% .vp-3{grid-template-columns:1fr}}%root% .stat-dark{background:#0a3a2c}%root% .stat-dark .n{color:#fff}%root% .stat-dark .l{color:#A9CFC2}%root% .mk-30{left:30%}%root% .center-head{margin-left:auto;margin-right:auto}"
+          }
+        },
+        {
+          "id": "me002",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me003"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl001"
+            ],
+            "tag": "nav"
+          }
+        },
+        {
+          "id": "me003",
+          "name": "div",
+          "parent": "me002",
+          "children": [
+            "me004",
+            "me005"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me004",
+          "name": "heading",
+          "parent": "me003",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl003"
+            ],
+            "text": "m2<span class=\"pe\">peru</span>.com",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me005",
+          "name": "div",
+          "parent": "me003",
+          "children": [
+            "me006",
+            "me007",
+            "me008",
+            "me009"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl004"
+            ]
+          }
+        },
+        {
+          "id": "me006",
+          "name": "text-basic",
+          "parent": "me005",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl005"
+            ],
+            "text": "Cómo funciona",
+            "tag": "a"
+          }
+        },
+        {
+          "id": "me007",
+          "name": "text-basic",
+          "parent": "me005",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl005"
+            ],
+            "text": "Herramientas",
+            "tag": "a"
+          }
+        },
+        {
+          "id": "me008",
+          "name": "text-basic",
+          "parent": "me005",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl005"
+            ],
+            "text": "Por qué confiar",
+            "tag": "a"
+          }
+        },
+        {
+          "id": "me009",
+          "name": "button",
+          "parent": "me005",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl006",
+              "mcl007"
+            ],
+            "text": "Evaluar gratis",
+            "link": {
+              "type": "external",
+              "url": "/"
+            }
+          }
+        },
+        {
+          "id": "me010",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me011"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl008"
+            ],
+            "tag": "header"
+          }
+        },
+        {
+          "id": "me011",
+          "name": "div",
+          "parent": "me010",
+          "children": [
+            "me012",
+            "me023"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me012",
+          "name": "div",
+          "parent": "me011",
+          "children": [
+            "me013",
+            "me014",
+            "me015",
+            "me016",
+            "me019"
+          ],
+          "settings": {}
+        },
+        {
+          "id": "me013",
+          "name": "text-basic",
+          "parent": "me012",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl009"
+            ],
+            "text": "<span class=\"d\"></span>Gratis · sin tarjeta · resultado al instante",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me014",
+          "name": "heading",
+          "parent": "me012",
+          "children": [],
+          "settings": {
+            "text": "¿Estás pagando lo justo<br>por esa propiedad?",
+            "tag": "h1"
+          }
+        },
+        {
+          "id": "me015",
+          "name": "text-basic",
+          "parent": "me012",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl010"
+            ],
+            "text": "m2peru te dice en segundos si el precio está bajo, dentro o sobre el mercado de su distrito. Y si la evalúas como inversión, te dice si de verdad va a tener retorno, una vez descontadas hipoteca, alquiler e inflación.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me016",
+          "name": "div",
+          "parent": "me012",
+          "children": [
+            "me017",
+            "me018"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl011"
+            ]
+          }
+        },
+        {
+          "id": "me017",
+          "name": "button",
+          "parent": "me016",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl006",
+              "mcl007",
+              "mcl012"
+            ],
+            "text": "Evaluar mi propiedad",
+            "link": {
+              "type": "external",
+              "url": "/"
+            }
+          }
+        },
+        {
+          "id": "me018",
+          "name": "button",
+          "parent": "me016",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl006",
+              "mcl013",
+              "mcl012"
+            ],
+            "text": "Ver cómo funciona",
+            "link": {
+              "type": "external",
+              "url": "#como"
+            }
+          }
+        },
+        {
+          "id": "me019",
+          "name": "div",
+          "parent": "me012",
+          "children": [
+            "me020",
+            "me021",
+            "me022"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl014"
+            ]
+          }
+        },
+        {
+          "id": "me020",
+          "name": "text-basic",
+          "parent": "me019",
+          "children": [],
+          "settings": {
+            "text": "<b style=\"color:var(--green)\">✓</b> Comparables reales del distrito",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me021",
+          "name": "text-basic",
+          "parent": "me019",
+          "children": [],
+          "settings": {
+            "text": "<b style=\"color:var(--green)\">✓</b> Inflación oficial BCRP",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me022",
+          "name": "text-basic",
+          "parent": "me019",
+          "children": [],
+          "settings": {
+            "text": "<b style=\"color:var(--green)\">✓</b> Sin jerga",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me023",
+          "name": "div",
+          "parent": "me011",
+          "children": [
+            "me024",
+            "me027",
+            "me032",
+            "me034",
+            "me038"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl015"
+            ]
+          }
+        },
+        {
+          "id": "me024",
+          "name": "div",
+          "parent": "me023",
+          "children": [
+            "me025",
+            "me026"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl016"
+            ]
+          }
+        },
+        {
+          "id": "me025",
+          "name": "heading",
+          "parent": "me024",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl017"
+            ],
+            "text": "m2<span class=\"pe\">peru</span>.com",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me026",
+          "name": "text-basic",
+          "parent": "me024",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl018"
+            ],
+            "text": "Resultado",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me027",
+          "name": "div",
+          "parent": "me023",
+          "children": [
+            "me028",
+            "me029"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl019"
+            ]
+          }
+        },
+        {
+          "id": "me028",
+          "name": "text-basic",
+          "parent": "me027",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl020"
+            ],
+            "_cssCustom": "%root%{background:var(--green)}",
+            "text": "A",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me029",
+          "name": "div",
+          "parent": "me027",
+          "children": [
+            "me030",
+            "me031"
+          ],
+          "settings": {}
+        },
+        {
+          "id": "me030",
+          "name": "heading",
+          "parent": "me029",
+          "children": [],
+          "settings": {
+            "text": "Bajo el mercado",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me031",
+          "name": "text-basic",
+          "parent": "me029",
+          "children": [],
+          "settings": {
+            "text": "El precio está por debajo de comparables del distrito.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me032",
+          "name": "div",
+          "parent": "me023",
+          "children": [
+            "me033"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl021"
+            ]
+          }
+        },
+        {
+          "id": "me033",
+          "name": "text-basic",
+          "parent": "me032",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl022",
+              "mcl023",
+              "mcl024"
+            ],
+            "text": "Tu precio",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me034",
+          "name": "div",
+          "parent": "me023",
+          "children": [
+            "me035",
+            "me036",
+            "me037"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl025",
+              "mcl024"
+            ]
+          }
+        },
+        {
+          "id": "me035",
+          "name": "text-basic",
+          "parent": "me034",
+          "children": [],
+          "settings": {
+            "text": "$2,400",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me036",
+          "name": "text-basic",
+          "parent": "me034",
+          "children": [],
+          "settings": {
+            "text": "Mediana $2,640",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me037",
+          "name": "text-basic",
+          "parent": "me034",
+          "children": [],
+          "settings": {
+            "text": "$2,900",
+            "tag": "span"
+          }
+        },
+        {
+          "id": "me038",
+          "name": "div",
+          "parent": "me023",
+          "children": [
+            "me039",
+            "me040",
+            "me041"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl026"
+            ]
+          }
+        },
+        {
+          "id": "me039",
+          "name": "text-basic",
+          "parent": "me038",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl027"
+            ],
+            "text": "En resumen · como inversión",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me040",
+          "name": "text-basic",
+          "parent": "me038",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl028"
+            ],
+            "text": "<b>✓</b> ¿Le gana a la inflación? 6.1% vs 4.1%",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me041",
+          "name": "text-basic",
+          "parent": "me038",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl028"
+            ],
+            "text": "<b>✓</b> ¿Rinde más que el banco? 7.4% vs 4.5%",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me042",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me043"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl029",
+              "mcl030"
+            ],
+            "tag": "section"
+          }
+        },
+        {
+          "id": "me043",
+          "name": "div",
+          "parent": "me042",
+          "children": [
+            "me044",
+            "me045",
+            "me046",
+            "me047"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me044",
+          "name": "text-basic",
+          "parent": "me043",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl031"
+            ],
+            "text": "El problema",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me045",
+          "name": "heading",
+          "parent": "me043",
+          "children": [],
+          "settings": {
+            "text": "El mercado inmobiliario<br>está lleno de humo",
+            "tag": "h2"
+          }
+        },
+        {
+          "id": "me046",
+          "name": "text-basic",
+          "parent": "me043",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl032"
+            ],
+            "text": "«Esta zona se está revalorizando», «es una gran inversión», «el precio es de oportunidad». Frases que venden, pero que nadie respalda con números. Así se compra caro y se invierte en lo que no rinde.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me047",
+          "name": "div",
+          "parent": "me043",
+          "children": [
+            "me048",
+            "me052",
+            "me056"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl033"
+            ]
+          }
+        },
+        {
+          "id": "me048",
+          "name": "div",
+          "parent": "me047",
+          "children": [
+            "me049",
+            "me050",
+            "me051"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl034"
+            ]
+          }
+        },
+        {
+          "id": "me049",
+          "name": "text-basic",
+          "parent": "me048",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl035"
+            ],
+            "text": "🤷",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me050",
+          "name": "heading",
+          "parent": "me048",
+          "children": [],
+          "settings": {
+            "text": "No sabes si el precio es justo",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me051",
+          "name": "text-basic",
+          "parent": "me048",
+          "children": [],
+          "settings": {
+            "text": "Te dan un número y no tienes con qué compararlo. El que vende decide la conversación.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me052",
+          "name": "div",
+          "parent": "me047",
+          "children": [
+            "me053",
+            "me054",
+            "me055"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl034"
+            ]
+          }
+        },
+        {
+          "id": "me053",
+          "name": "text-basic",
+          "parent": "me052",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl035"
+            ],
+            "text": "📈",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me054",
+          "name": "heading",
+          "parent": "me052",
+          "children": [],
+          "settings": {
+            "text": "«Plusvalía» que engaña",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me055",
+          "name": "text-basic",
+          "parent": "me052",
+          "children": [],
+          "settings": {
+            "text": "El precio sube, pero si no le gana a la inflación, en realidad estás perdiendo poder adquisitivo.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me056",
+          "name": "div",
+          "parent": "me047",
+          "children": [
+            "me057",
+            "me058",
+            "me059"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl034"
+            ]
+          }
+        },
+        {
+          "id": "me057",
+          "name": "text-basic",
+          "parent": "me056",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl035"
+            ],
+            "text": "🏦",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me058",
+          "name": "heading",
+          "parent": "me056",
+          "children": [],
+          "settings": {
+            "text": "Retorno que no existe",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me059",
+          "name": "text-basic",
+          "parent": "me056",
+          "children": [],
+          "settings": {
+            "text": "Con hipoteca, comisiones e impuestos, muchas «inversiones» rinden menos que el banco.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me060",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me061"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl029"
+            ],
+            "tag": "section"
+          }
+        },
+        {
+          "id": "me061",
+          "name": "div",
+          "parent": "me060",
+          "children": [
+            "me062",
+            "me066"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me062",
+          "name": "div",
+          "parent": "me061",
+          "children": [
+            "me063",
+            "me064",
+            "me065"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl036"
+            ]
+          }
+        },
+        {
+          "id": "me063",
+          "name": "text-basic",
+          "parent": "me062",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl031"
+            ],
+            "text": "Lo que resuelve",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me064",
+          "name": "heading",
+          "parent": "me062",
+          "children": [],
+          "settings": {
+            "text": "Dos preguntas, respondidas con datos",
+            "tag": "h2"
+          }
+        },
+        {
+          "id": "me065",
+          "name": "text-basic",
+          "parent": "me062",
+          "children": [],
+          "settings": {
+            "text": "No es un portal de avisos. Es un evaluador que te pone del lado del que decide, no del que vende.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me066",
+          "name": "div",
+          "parent": "me061",
+          "children": [
+            "me067",
+            "me076"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl037"
+            ]
+          }
+        },
+        {
+          "id": "me067",
+          "name": "div",
+          "parent": "me066",
+          "children": [
+            "me068",
+            "me070",
+            "me071",
+            "me072"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl038"
+            ]
+          }
+        },
+        {
+          "id": "me068",
+          "name": "div",
+          "parent": "me067",
+          "children": [
+            "me069"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl039"
+            ]
+          }
+        },
+        {
+          "id": "me069",
+          "name": "text-basic",
+          "parent": "me068",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:24px}",
+            "text": "🔎",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me070",
+          "name": "heading",
+          "parent": "me067",
+          "children": [],
+          "settings": {
+            "text": "¿Compras a buen precio?",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me071",
+          "name": "text-basic",
+          "parent": "me067",
+          "children": [],
+          "settings": {
+            "text": "Comparamos el precio contra los percentiles de propiedades reales del mismo distrito, área y dormitorios. Te decimos en una palabra: bajo, dentro o sobre el mercado.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me072",
+          "name": "div",
+          "parent": "me067",
+          "children": [
+            "me073",
+            "me074",
+            "me075"
+          ],
+          "settings": {
+            "_cssCustom": "%root%{margin-top:18px}"
+          }
+        },
+        {
+          "id": "me073",
+          "name": "text-basic",
+          "parent": "me072",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:14px;margin-bottom:9px}",
+            "text": "<b style=\"color:var(--green)\">✓</b>&nbsp; Rango de precio por m² de la zona",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me074",
+          "name": "text-basic",
+          "parent": "me072",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:14px;margin-bottom:9px}",
+            "text": "<b style=\"color:var(--green)\">✓</b>&nbsp; Cuánto estás por encima o debajo de la mediana",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me075",
+          "name": "text-basic",
+          "parent": "me072",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:14px;margin-bottom:9px}",
+            "text": "<b style=\"color:var(--green)\">✓</b>&nbsp; Munición real para negociar",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me076",
+          "name": "div",
+          "parent": "me066",
+          "children": [
+            "me077",
+            "me079",
+            "me080",
+            "me081"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl038"
+            ]
+          }
+        },
+        {
+          "id": "me077",
+          "name": "div",
+          "parent": "me076",
+          "children": [
+            "me078"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl039"
+            ]
+          }
+        },
+        {
+          "id": "me078",
+          "name": "text-basic",
+          "parent": "me077",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:24px}",
+            "text": "🧮",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me079",
+          "name": "heading",
+          "parent": "me076",
+          "children": [],
+          "settings": {
+            "text": "¿Va a tener retorno?",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me080",
+          "name": "text-basic",
+          "parent": "me076",
+          "children": [],
+          "settings": {
+            "text": "La calculadora toma el caso completo —hipoteca, alquiler, plusvalía e inflación— y te dice sin maquillaje si la inversión vale la pena frente a alternativas seguras.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me081",
+          "name": "div",
+          "parent": "me076",
+          "children": [
+            "me082",
+            "me083",
+            "me084"
+          ],
+          "settings": {
+            "_cssCustom": "%root%{margin-top:18px}"
+          }
+        },
+        {
+          "id": "me082",
+          "name": "text-basic",
+          "parent": "me081",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:14px;margin-bottom:9px}",
+            "text": "<b style=\"color:var(--green)\">✓</b>&nbsp; ¿La ganancia le gana a la inflación?",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me083",
+          "name": "text-basic",
+          "parent": "me081",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:14px;margin-bottom:9px}",
+            "text": "<b style=\"color:var(--green)\">✓</b>&nbsp; ¿Rinde más que un depósito a plazo?",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me084",
+          "name": "text-basic",
+          "parent": "me081",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:14px;margin-bottom:9px}",
+            "text": "<b style=\"color:var(--green)\">✓</b>&nbsp; Cuánto te cuesta el alquiler que no cubre la cuota",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me085",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me086"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl029"
+            ],
+            "tag": "section",
+            "_cssCustom": "%root%{background:var(--bg)}"
+          }
+        },
+        {
+          "id": "me086",
+          "name": "div",
+          "parent": "me085",
+          "children": [
+            "me087",
+            "me091",
+            "me104"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me087",
+          "name": "div",
+          "parent": "me086",
+          "children": [
+            "me088",
+            "me089",
+            "me090"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl036"
+            ]
+          }
+        },
+        {
+          "id": "me088",
+          "name": "text-basic",
+          "parent": "me087",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl031"
+            ],
+            "text": "Cómo funciona",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me089",
+          "name": "heading",
+          "parent": "me087",
+          "children": [],
+          "settings": {
+            "text": "Tres pasos, treinta segundos",
+            "tag": "h2"
+          }
+        },
+        {
+          "id": "me090",
+          "name": "text-basic",
+          "parent": "me087",
+          "children": [],
+          "settings": {
+            "text": "Sin registro para empezar. Llenas lo básico y al instante tienes el veredicto.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me091",
+          "name": "div",
+          "parent": "me086",
+          "children": [
+            "me092",
+            "me096",
+            "me100"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl040"
+            ]
+          }
+        },
+        {
+          "id": "me092",
+          "name": "div",
+          "parent": "me091",
+          "children": [
+            "me093",
+            "me094",
+            "me095"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl018"
+            ]
+          }
+        },
+        {
+          "id": "me093",
+          "name": "text-basic",
+          "parent": "me092",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl041"
+            ],
+            "text": "1",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me094",
+          "name": "heading",
+          "parent": "me092",
+          "children": [],
+          "settings": {
+            "text": "Ubicación",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me095",
+          "name": "text-basic",
+          "parent": "me092",
+          "children": [],
+          "settings": {
+            "text": "Eliges el distrito y el tipo de propiedad. Solo lo esencial.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me096",
+          "name": "div",
+          "parent": "me091",
+          "children": [
+            "me097",
+            "me098",
+            "me099"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl018"
+            ]
+          }
+        },
+        {
+          "id": "me097",
+          "name": "text-basic",
+          "parent": "me096",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl041"
+            ],
+            "text": "2",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me098",
+          "name": "heading",
+          "parent": "me096",
+          "children": [],
+          "settings": {
+            "text": "Características",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me099",
+          "name": "text-basic",
+          "parent": "me096",
+          "children": [],
+          "settings": {
+            "text": "Área, dormitorios y poco más. Mientras más datos, más preciso el resultado.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me100",
+          "name": "div",
+          "parent": "me091",
+          "children": [
+            "me101",
+            "me102",
+            "me103"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl018"
+            ]
+          }
+        },
+        {
+          "id": "me101",
+          "name": "text-basic",
+          "parent": "me100",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl041"
+            ],
+            "text": "3",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me102",
+          "name": "heading",
+          "parent": "me100",
+          "children": [],
+          "settings": {
+            "text": "Precio y veredicto",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me103",
+          "name": "text-basic",
+          "parent": "me100",
+          "children": [],
+          "settings": {
+            "text": "Pones el precio y al instante ves si es justo, y si conviene como inversión.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me104",
+          "name": "div",
+          "parent": "me086",
+          "children": [
+            "me105"
+          ],
+          "settings": {
+            "_cssCustom": "%root%{text-align:center;margin-top:44px}"
+          }
+        },
+        {
+          "id": "me105",
+          "name": "button",
+          "parent": "me104",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl006",
+              "mcl007",
+              "mcl012"
+            ],
+            "text": "Probar ahora, gratis",
+            "link": {
+              "type": "external",
+              "url": "/"
+            }
+          }
+        },
+        {
+          "id": "me106",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me107"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl029",
+              "mcl030"
+            ],
+            "tag": "section"
+          }
+        },
+        {
+          "id": "me107",
+          "name": "div",
+          "parent": "me106",
+          "children": [
+            "me108",
+            "me109",
+            "me110",
+            "me111"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me108",
+          "name": "text-basic",
+          "parent": "me107",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl031"
+            ],
+            "text": "Por qué somos distintos",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me109",
+          "name": "heading",
+          "parent": "me107",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl042"
+            ],
+            "text": "Te decimos la verdad,<br><span class=\"hl\">aunque no sea la que querías oír.</span>",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me110",
+          "name": "text-basic",
+          "parent": "me107",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl032"
+            ],
+            "text": "Una propiedad puede subir de precio y aun así hacerte perder plata. Si la apreciación no le gana a la inflación, y el alquiler no cubre la cuota, esa «gran inversión» rinde menos que dejar el dinero en el banco. La mayoría de herramientas te muestran solo lo bonito. Nosotros te mostramos el número real.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me111",
+          "name": "div",
+          "parent": "me107",
+          "children": [
+            "me112",
+            "me115",
+            "me118",
+            "me121"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl043"
+            ]
+          }
+        },
+        {
+          "id": "me112",
+          "name": "div",
+          "parent": "me111",
+          "children": [
+            "me113",
+            "me114"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl044",
+              "mcl045"
+            ]
+          }
+        },
+        {
+          "id": "me113",
+          "name": "text-basic",
+          "parent": "me112",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl041"
+            ],
+            "text": "21.2%",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me114",
+          "name": "text-basic",
+          "parent": "me112",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl028"
+            ],
+            "text": "Inflación acumulada que erosiona tu capital",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me115",
+          "name": "div",
+          "parent": "me111",
+          "children": [
+            "me116",
+            "me117"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl044",
+              "mcl045"
+            ]
+          }
+        },
+        {
+          "id": "me116",
+          "name": "text-basic",
+          "parent": "me115",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl041"
+            ],
+            "text": "4.5%",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me117",
+          "name": "text-basic",
+          "parent": "me115",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl028"
+            ],
+            "text": "Lo que rinde el banco, sin riesgo",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me118",
+          "name": "div",
+          "parent": "me111",
+          "children": [
+            "me119",
+            "me120"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl044",
+              "mcl045"
+            ]
+          }
+        },
+        {
+          "id": "me119",
+          "name": "text-basic",
+          "parent": "me118",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl041"
+            ],
+            "text": "S/&$",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me120",
+          "name": "text-basic",
+          "parent": "me118",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl028"
+            ],
+            "text": "Cálculos en soles y dólares",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me121",
+          "name": "div",
+          "parent": "me111",
+          "children": [
+            "me122",
+            "me123"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl044",
+              "mcl045"
+            ]
+          }
+        },
+        {
+          "id": "me122",
+          "name": "text-basic",
+          "parent": "me121",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl041"
+            ],
+            "text": "BCRP",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me123",
+          "name": "text-basic",
+          "parent": "me121",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl028"
+            ],
+            "text": "Inflación oficial 2010–2026",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me124",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me125"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl029"
+            ],
+            "tag": "section"
+          }
+        },
+        {
+          "id": "me125",
+          "name": "div",
+          "parent": "me124",
+          "children": [
+            "me126",
+            "me130"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me126",
+          "name": "div",
+          "parent": "me125",
+          "children": [
+            "me127",
+            "me128",
+            "me129"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl036"
+            ]
+          }
+        },
+        {
+          "id": "me127",
+          "name": "text-basic",
+          "parent": "me126",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl031"
+            ],
+            "text": "Por qué confiar",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me128",
+          "name": "heading",
+          "parent": "me126",
+          "children": [],
+          "settings": {
+            "text": "Datos reales, lenguaje claro",
+            "tag": "h2"
+          }
+        },
+        {
+          "id": "me129",
+          "name": "text-basic",
+          "parent": "me126",
+          "children": [],
+          "settings": {
+            "text": "Nada de cifras infladas ni promesas. Todo lo que decimos se apoya en datos que puedes verificar.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me130",
+          "name": "div",
+          "parent": "me125",
+          "children": [
+            "me131",
+            "me136",
+            "me141"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl037",
+              "mcl046"
+            ]
+          }
+        },
+        {
+          "id": "me131",
+          "name": "div",
+          "parent": "me130",
+          "children": [
+            "me132",
+            "me134",
+            "me135"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl038"
+            ]
+          }
+        },
+        {
+          "id": "me132",
+          "name": "div",
+          "parent": "me131",
+          "children": [
+            "me133"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl039"
+            ]
+          }
+        },
+        {
+          "id": "me133",
+          "name": "text-basic",
+          "parent": "me132",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:24px}",
+            "text": "📊",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me134",
+          "name": "heading",
+          "parent": "me131",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:19px}",
+            "text": "Comparables reales",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me135",
+          "name": "text-basic",
+          "parent": "me131",
+          "children": [],
+          "settings": {
+            "text": "Percentiles de propiedades publicadas en el mismo distrito, no un promedio inventado.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me136",
+          "name": "div",
+          "parent": "me130",
+          "children": [
+            "me137",
+            "me139",
+            "me140"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl038"
+            ]
+          }
+        },
+        {
+          "id": "me137",
+          "name": "div",
+          "parent": "me136",
+          "children": [
+            "me138"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl039"
+            ]
+          }
+        },
+        {
+          "id": "me138",
+          "name": "text-basic",
+          "parent": "me137",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:24px}",
+            "text": "⏱️",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me139",
+          "name": "heading",
+          "parent": "me136",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:19px}",
+            "text": "Inflación oficial",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me140",
+          "name": "text-basic",
+          "parent": "me136",
+          "children": [],
+          "settings": {
+            "text": "Usamos la inflación del BCRP año por año para mostrar tu ganancia real, no la nominal.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me141",
+          "name": "div",
+          "parent": "me130",
+          "children": [
+            "me142",
+            "me144",
+            "me145"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl038"
+            ]
+          }
+        },
+        {
+          "id": "me142",
+          "name": "div",
+          "parent": "me141",
+          "children": [
+            "me143"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl039"
+            ]
+          }
+        },
+        {
+          "id": "me143",
+          "name": "text-basic",
+          "parent": "me142",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:24px}",
+            "text": "💬",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me144",
+          "name": "heading",
+          "parent": "me141",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:19px}",
+            "text": "Sin jerga",
+            "tag": "h3"
+          }
+        },
+        {
+          "id": "me145",
+          "name": "text-basic",
+          "parent": "me141",
+          "children": [],
+          "settings": {
+            "text": "Nada de «cap rate» ni «plusvalía anualizada». Preguntas que cualquiera entiende.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me146",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me147"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl029"
+            ],
+            "tag": "section",
+            "_cssCustom": "%root%{background:var(--bg)}"
+          }
+        },
+        {
+          "id": "me147",
+          "name": "div",
+          "parent": "me146",
+          "children": [
+            "me148",
+            "me151"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me148",
+          "name": "div",
+          "parent": "me147",
+          "children": [
+            "me149",
+            "me150"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl036",
+              "mcl047"
+            ],
+            "_cssCustom": "%root%{text-align:center}"
+          }
+        },
+        {
+          "id": "me149",
+          "name": "text-basic",
+          "parent": "me148",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl031"
+            ],
+            "text": "Preguntas frecuentes",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me150",
+          "name": "heading",
+          "parent": "me148",
+          "children": [],
+          "settings": {
+            "text": "Lo que todos preguntan",
+            "tag": "h2"
+          }
+        },
+        {
+          "id": "me151",
+          "name": "div",
+          "parent": "me147",
+          "children": [
+            "me152",
+            "me155",
+            "me158",
+            "me161"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl048"
+            ]
+          }
+        },
+        {
+          "id": "me152",
+          "name": "div",
+          "parent": "me151",
+          "children": [
+            "me153",
+            "me154"
+          ],
+          "settings": {
+            "_cssCustom": "%root%{border-bottom:1px solid var(--border);padding:20px 0}"
+          }
+        },
+        {
+          "id": "me153",
+          "name": "heading",
+          "parent": "me152",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-weight:600;font-size:17px}",
+            "text": "¿De dónde sacan los precios de mercado?",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me154",
+          "name": "text-basic",
+          "parent": "me152",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:15px;color:var(--ink-60);margin-top:12px}",
+            "text": "De propiedades reales publicadas en los portales inmobiliarios del Perú. Calculamos los percentiles (P25, mediana, P75) por distrito, tipo y tamaño, para comparar tu caso con propiedades parecidas.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me155",
+          "name": "div",
+          "parent": "me151",
+          "children": [
+            "me156",
+            "me157"
+          ],
+          "settings": {
+            "_cssCustom": "%root%{border-bottom:1px solid var(--border);padding:20px 0}"
+          }
+        },
+        {
+          "id": "me156",
+          "name": "heading",
+          "parent": "me155",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-weight:600;font-size:17px}",
+            "text": "¿Es gratis?",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me157",
+          "name": "text-basic",
+          "parent": "me155",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:15px;color:var(--ink-60);margin-top:12px}",
+            "text": "Sí. Evaluar una propiedad y calcular su retorno como inversión es gratis y no necesitas tarjeta.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me158",
+          "name": "div",
+          "parent": "me151",
+          "children": [
+            "me159",
+            "me160"
+          ],
+          "settings": {
+            "_cssCustom": "%root%{border-bottom:1px solid var(--border);padding:20px 0}"
+          }
+        },
+        {
+          "id": "me159",
+          "name": "heading",
+          "parent": "me158",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-weight:600;font-size:17px}",
+            "text": "¿Qué necesito para la calculadora de inversión?",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me160",
+          "name": "text-basic",
+          "parent": "me158",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:15px;color:var(--ink-60);margin-top:12px}",
+            "text": "Lo básico de tu caso: precio de compra, área, alquiler estimado y, si es financiado, la cuota y el saldo de tu crédito. El resto lo asumimos con supuestos de mercado que puedes ajustar.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me161",
+          "name": "div",
+          "parent": "me151",
+          "children": [
+            "me162",
+            "me163"
+          ],
+          "settings": {
+            "_cssCustom": "%root%{border-bottom:1px solid var(--border);padding:20px 0}"
+          }
+        },
+        {
+          "id": "me162",
+          "name": "heading",
+          "parent": "me161",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-weight:600;font-size:17px}",
+            "text": "¿Por qué una propiedad que sube de precio puede ser mala inversión?",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me163",
+          "name": "text-basic",
+          "parent": "me161",
+          "children": [],
+          "settings": {
+            "_cssCustom": "%root%{font-size:15px;color:var(--ink-60);margin-top:12px}",
+            "text": "Porque «subir de precio» no es lo mismo que «ganar». Si la subida no le gana a la inflación, pierdes poder adquisitivo. Y si el alquiler no cubre la cuota, pones plata de tu bolsillo cada mes.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me164",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me165"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl029"
+            ],
+            "tag": "section"
+          }
+        },
+        {
+          "id": "me165",
+          "name": "div",
+          "parent": "me164",
+          "children": [
+            "me166"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me166",
+          "name": "div",
+          "parent": "me165",
+          "children": [
+            "me167"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl049"
+            ]
+          }
+        },
+        {
+          "id": "me167",
+          "name": "div",
+          "parent": "me166",
+          "children": [
+            "me168",
+            "me169",
+            "me170"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl050"
+            ]
+          }
+        },
+        {
+          "id": "me168",
+          "name": "heading",
+          "parent": "me167",
+          "children": [],
+          "settings": {
+            "text": "Antes de firmar, evalúalo.",
+            "tag": "h2"
+          }
+        },
+        {
+          "id": "me169",
+          "name": "text-basic",
+          "parent": "me167",
+          "children": [],
+          "settings": {
+            "text": "Treinta segundos pueden ahorrarte una mala compra o una inversión que no rinde.",
+            "tag": "p"
+          }
+        },
+        {
+          "id": "me170",
+          "name": "button",
+          "parent": "me167",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl006",
+              "mcl051",
+              "mcl012"
+            ],
+            "text": "Evaluar mi propiedad gratis",
+            "link": {
+              "type": "external",
+              "url": "/"
+            }
+          }
+        },
+        {
+          "id": "me171",
+          "name": "div",
+          "parent": "me001",
+          "children": [
+            "me172"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl052"
+            ],
+            "tag": "footer"
+          }
+        },
+        {
+          "id": "me172",
+          "name": "div",
+          "parent": "me171",
+          "children": [
+            "me173",
+            "me180"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl002"
+            ]
+          }
+        },
+        {
+          "id": "me173",
+          "name": "div",
+          "parent": "me172",
+          "children": [
+            "me174",
+            "me175"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl053"
+            ]
+          }
+        },
+        {
+          "id": "me174",
+          "name": "heading",
+          "parent": "me173",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl003"
+            ],
+            "text": "m2<span class=\"pe\">peru</span>.com",
+            "tag": "div"
+          }
+        },
+        {
+          "id": "me175",
+          "name": "div",
+          "parent": "me173",
+          "children": [
+            "me176",
+            "me177",
+            "me178",
+            "me179"
+          ],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl054"
+            ]
+          }
+        },
+        {
+          "id": "me176",
+          "name": "text-basic",
+          "parent": "me175",
+          "children": [],
+          "settings": {
+            "text": "Cómo funciona",
+            "tag": "a"
+          }
+        },
+        {
+          "id": "me177",
+          "name": "text-basic",
+          "parent": "me175",
+          "children": [],
+          "settings": {
+            "text": "Herramientas",
+            "tag": "a"
+          }
+        },
+        {
+          "id": "me178",
+          "name": "text-basic",
+          "parent": "me175",
+          "children": [],
+          "settings": {
+            "text": "Por qué confiar",
+            "tag": "a"
+          }
+        },
+        {
+          "id": "me179",
+          "name": "text-basic",
+          "parent": "me175",
+          "children": [],
+          "settings": {
+            "text": "Evaluar gratis",
+            "tag": "a"
+          }
+        },
+        {
+          "id": "me180",
+          "name": "text-basic",
+          "parent": "me172",
+          "children": [],
+          "settings": {
+            "_cssGlobalClasses": [
+              "mcl055"
+            ],
+            "text": "m2peru · El valor real de tu metro cuadrado. · Los resultados son estimaciones basadas en data de mercado público.",
+            "tag": "p"
+          }
+        }
+      ],
+      "globalClasses": [
+        {
+          "id": "mcl000",
+          "name": "m2",
+          "settings": {}
+        },
+        {
+          "id": "mcl001",
+          "name": "navbar",
+          "settings": {}
+        },
+        {
+          "id": "mcl002",
+          "name": "wrap",
+          "settings": {}
+        },
+        {
+          "id": "mcl003",
+          "name": "wordmark",
+          "settings": {}
+        },
+        {
+          "id": "mcl004",
+          "name": "nav-links",
+          "settings": {}
+        },
+        {
+          "id": "mcl005",
+          "name": "hide-sm",
+          "settings": {}
+        },
+        {
+          "id": "mcl006",
+          "name": "btn",
+          "settings": {}
+        },
+        {
+          "id": "mcl007",
+          "name": "btn-green",
+          "settings": {}
+        },
+        {
+          "id": "mcl008",
+          "name": "hero",
+          "settings": {}
+        },
+        {
+          "id": "mcl009",
+          "name": "badge-pill",
+          "settings": {}
+        },
+        {
+          "id": "mcl010",
+          "name": "sub",
+          "settings": {}
+        },
+        {
+          "id": "mcl011",
+          "name": "cta-row",
+          "settings": {}
+        },
+        {
+          "id": "mcl012",
+          "name": "btn-lg",
+          "settings": {}
+        },
+        {
+          "id": "mcl013",
+          "name": "btn-ghost",
+          "settings": {}
+        },
+        {
+          "id": "mcl014",
+          "name": "trust",
+          "settings": {}
+        },
+        {
+          "id": "mcl015",
+          "name": "mock",
+          "settings": {}
+        },
+        {
+          "id": "mcl016",
+          "name": "top",
+          "settings": {}
+        },
+        {
+          "id": "mcl017",
+          "name": "wm",
+          "settings": {}
+        },
+        {
+          "id": "mcl018",
+          "name": "step",
+          "settings": {}
+        },
+        {
+          "id": "mcl019",
+          "name": "score-row",
+          "settings": {}
+        },
+        {
+          "id": "mcl020",
+          "name": "scorebadge",
+          "settings": {}
+        },
+        {
+          "id": "mcl021",
+          "name": "pbar",
+          "settings": {}
+        },
+        {
+          "id": "mcl022",
+          "name": "mk",
+          "settings": {}
+        },
+        {
+          "id": "mcl023",
+          "name": "mk-30",
+          "settings": {}
+        },
+        {
+          "id": "mcl024",
+          "name": "tnum",
+          "settings": {}
+        },
+        {
+          "id": "mcl025",
+          "name": "pbar-x",
+          "settings": {}
+        },
+        {
+          "id": "mcl026",
+          "name": "mini-alert",
+          "settings": {}
+        },
+        {
+          "id": "mcl027",
+          "name": "t",
+          "settings": {}
+        },
+        {
+          "id": "mcl028",
+          "name": "l",
+          "settings": {}
+        },
+        {
+          "id": "mcl029",
+          "name": "sec",
+          "settings": {}
+        },
+        {
+          "id": "mcl030",
+          "name": "band",
+          "settings": {}
+        },
+        {
+          "id": "mcl031",
+          "name": "eyebrow",
+          "settings": {}
+        },
+        {
+          "id": "mcl032",
+          "name": "lead-lg",
+          "settings": {}
+        },
+        {
+          "id": "mcl033",
+          "name": "pain",
+          "settings": {}
+        },
+        {
+          "id": "mcl034",
+          "name": "p",
+          "settings": {}
+        },
+        {
+          "id": "mcl035",
+          "name": "q",
+          "settings": {}
+        },
+        {
+          "id": "mcl036",
+          "name": "section-head",
+          "settings": {}
+        },
+        {
+          "id": "mcl037",
+          "name": "vp",
+          "settings": {}
+        },
+        {
+          "id": "mcl038",
+          "name": "vcard",
+          "settings": {}
+        },
+        {
+          "id": "mcl039",
+          "name": "vicon",
+          "settings": {}
+        },
+        {
+          "id": "mcl040",
+          "name": "steps",
+          "settings": {}
+        },
+        {
+          "id": "mcl041",
+          "name": "n",
+          "settings": {}
+        },
+        {
+          "id": "mcl042",
+          "name": "quote",
+          "settings": {}
+        },
+        {
+          "id": "mcl043",
+          "name": "stats",
+          "settings": {}
+        },
+        {
+          "id": "mcl044",
+          "name": "stat",
+          "settings": {}
+        },
+        {
+          "id": "mcl045",
+          "name": "stat-dark",
+          "settings": {}
+        },
+        {
+          "id": "mcl046",
+          "name": "vp-3",
+          "settings": {}
+        },
+        {
+          "id": "mcl047",
+          "name": "center-head",
+          "settings": {}
+        },
+        {
+          "id": "mcl048",
+          "name": "faq",
+          "settings": {}
+        },
+        {
+          "id": "mcl049",
+          "name": "cta-final",
+          "settings": {}
+        },
+        {
+          "id": "mcl050",
+          "name": "inner",
+          "settings": {}
+        },
+        {
+          "id": "mcl051",
+          "name": "btn-white",
+          "settings": {}
+        },
+        {
+          "id": "mcl052",
+          "name": "ftr",
+          "settings": {}
+        },
+        {
+          "id": "mcl053",
+          "name": "row",
+          "settings": {}
+        },
+        {
+          "id": "mcl054",
+          "name": "links",
+          "settings": {}
+        },
+        {
+          "id": "mcl055",
+          "name": "copy",
+          "settings": {}
+        }
+      ],
+      "globalElements": [],
+      "source": "bricksTemplate",
+      "sourceUrl": "https://m2peru.com",
+      "version": "1.9.9",
+      "templateType": "section"
+    }
+  }
+]
