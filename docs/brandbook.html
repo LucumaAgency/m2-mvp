@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>m2peru — Brandbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#0B6E4F;       /* Verde m2 — primario */
+    --green-deep:#074535;  /* Verde profundo — fondos de impacto / texto sobre claro */
+    --green-mid:#C2E5D8;   /* Verde medio — apoyo, bordes suaves */
+    --green-light:#E8F5F0; /* Verde claro — fondos de realce */
+    --ink:#0F1117;         /* Tinta — texto y titulares */
+    --ink-60:#6B6B6B;      /* Gris medio — cuerpo secundario */
+    --ink-30:#ADADAD;      /* Gris claro — placeholders, líneas */
+    --bg:#F5F5F3;          /* Hueso — fondo neutro */
+    --surface:#FFFFFF;     /* Blanco — tarjetas */
+    --border:#E2E2DE;      /* Borde */
+    --rojo:#C0392B;        /* Veredicto: sobre mercado / pérdida */
+    --ambar:#B8860B;       /* Veredicto: en rango / alerta */
+    --verde-ok:#0B6E4F;    /* Veredicto: bajo mercado / rentable */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);line-height:1.6;font-weight:400;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 40px}
+  section{padding:90px 0;border-bottom:1px solid var(--border)}
+  section.green{background:var(--green-deep);color:#fff;border-bottom:1px solid #0a3a2c}
+  section.green .lead{color:#CDE7DD}
+  section.green p{color:#A9CFC2}
+  h1,h2,h3,h4{font-weight:800;letter-spacing:-.025em;line-height:1.1}
+  .kicker{font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:18px}
+  section.green .kicker{color:var(--green-mid)}
+  .lead{font-size:20px;font-weight:400;color:var(--ink-60);max-width:680px}
+  p{max-width:680px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:var(--bg);padding:1px 6px;border-radius:5px}
+
+  /* COVER */
+  .cover{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;justify-content:center;border:none;position:relative;overflow:hidden}
+  .cover::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.7;
+     background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+     background-size:44px 44px;-webkit-mask:radial-gradient(120% 90% at 75% 15%,#000 0%,transparent 70%);mask:radial-gradient(120% 90% at 75% 15%,#000 0%,transparent 70%)}
+  .cover .wrap{position:relative;z-index:2}
+  .iso{width:92px;height:92px;border-radius:22px;background:var(--green);color:#fff;
+       display:flex;align-items:center;justify-content:center;font-weight:800;font-size:40px;letter-spacing:-.04em;margin-bottom:38px;box-shadow:0 10px 30px rgba(11,110,79,.25)}
+  .iso sup{font-size:.5em;font-weight:700;margin-left:1px}
+  .cover h1{font-size:clamp(48px,9vw,100px);font-weight:800;letter-spacing:-.045em}
+  .cover .sub{font-size:20px;font-weight:400;color:var(--ink-60);margin-top:24px;max-width:600px}
+  .cover .sub b{color:var(--green)}
+  .cover .meta{margin-top:56px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-30);font-weight:600}
+
+  /* TOC */
+  .toc{padding:70px 0;border-bottom:1px solid var(--border)}
+  .toc .lbl{font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:28px}
+  .toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 50px}
+  .toc-grid a{display:flex;align-items:baseline;gap:14px;padding:13px 0;border-bottom:1px solid var(--bg);text-decoration:none;color:var(--ink);transition:color .18s ease,padding-left .18s ease}
+  .toc-grid a:hover{color:var(--green);padding-left:8px}
+  .toc-grid .tn{font-weight:800;font-size:13px;color:var(--green);min-width:22px;font-variant-numeric:tabular-nums}
+  .toc-grid .tt{font-weight:600;font-size:15px}
+
+  /* CARDS / GRIDS */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+  .card{background:var(--bg);border-radius:14px;padding:28px}
+  .card h4{font-size:18px;margin-bottom:10px}
+  .card.do{border-top:4px solid var(--green)}
+  .card.dont{border-top:4px solid var(--rojo)}
+  section.green .card{background:#0a3a2c}
+  section.green .card h4{color:#fff}
+  section.green .card p,section.green .card li{color:#A9CFC2}
+  ul{margin:14px 0 0 18px}
+  li{margin-bottom:8px;font-size:15px}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:30px}
+  .stat{background:var(--green-light);color:var(--green-deep);border-radius:14px;padding:26px 20px;text-align:center}
+  .stat .n{font-weight:800;font-size:38px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:12px;color:var(--green);margin-top:6px;font-weight:500}
+
+  /* LOGO */
+  .iso-tile{width:120px;height:120px;border-radius:28px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:54px;letter-spacing:-.04em}
+  .iso-tile sup{font-size:.5em;font-weight:700}
+  .wordmark{font-weight:700;font-size:34px;letter-spacing:-.03em;color:var(--ink)}
+  .wordmark .pe{color:var(--green)}
+  .logo-row{display:flex;gap:32px;align-items:center;flex-wrap:wrap;margin:34px 0}
+  .logo-box{background:var(--bg);border-radius:16px;padding:46px;display:flex;align-items:center;justify-content:center;flex:1;min-width:220px}
+  .logo-box.deep{background:var(--green-deep)}
+  .logo-box.green{background:var(--green)}
+  .logo-box.deep .wordmark,.logo-box.green .wordmark{color:#fff}
+  .logo-box.deep .wordmark .pe{color:var(--green-mid)}
+  .logo-box.green .wordmark .pe{color:#fff;opacity:.7}
+  .logo-box.deep .iso-tile,.logo-box.green .iso-tile{background:#fff;color:var(--green)}
+  .clearspace{display:inline-block;padding:30px;border:1px dashed var(--ink-30);border-radius:8px;position:relative}
+  .clearspace .x{position:absolute;font-size:10px;font-weight:700;color:var(--green)}
+  .clearspace .x.t{top:9px;left:50%;transform:translateX(-50%)}
+  .clearspace .x.l{left:9px;top:50%;transform:translateY(-50%)}
+
+  /* COLOR */
+  .swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:18px;margin-top:36px}
+  .sw{border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+  .sw .chip{height:110px}
+  .sw .info{padding:15px 18px}
+  .sw .name{font-weight:700;font-size:15px}
+  .sw .hex{font-size:13px;color:var(--ink-60);font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
+  .sw .role{font-size:12px;color:var(--ink-60);margin-top:8px;line-height:1.4}
+  .swatch-inline{width:14px;height:14px;border-radius:4px;display:inline-block;vertical-align:middle;margin-right:8px;border:1px solid var(--border)}
+
+  /* TYPE */
+  .specimen{margin-top:36px;background:var(--bg);border-radius:16px;padding:46px}
+  .type-row{padding:22px 0;border-bottom:1px solid var(--border)}
+  .type-row:last-child{border:none}
+  .type-row .tag{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:6px}
+  .scale{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px}
+  .scale span{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--ink-60)}
+  .num-demo{font-variant-numeric:tabular-nums;font-weight:700;font-size:30px;letter-spacing:-.02em}
+
+  /* UI */
+  .pill{display:inline-block;background:var(--green);color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:10px}
+  .pill.ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
+  .pill.dark{background:var(--ink);color:#fff}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+  .chip{font-size:13px;font-weight:500;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--ink-60)}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .chip.green-on{background:var(--green);border-color:var(--green);color:#fff}
+
+  /* SCORE + SEMAFORO */
+  .scorebadge{width:64px;height:64px;border-radius:16px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;flex:none}
+  .score-row{display:flex;gap:16px;align-items:center;margin-top:8px}
+  .verdicts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  .vd{border-radius:14px;padding:20px;border:1px solid var(--border)}
+  .vd .dot{width:34px;height:34px;border-radius:9px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;margin-bottom:12px}
+  .vd b{font-size:15px}
+  .vd p{font-size:13px;color:var(--ink-60);margin-top:4px}
+  .alert{border-radius:10px;padding:14px 16px;border-left:3px solid;margin-top:10px}
+  .alert .at{font-weight:600;font-size:13px;margin-bottom:6px}
+  .alert .line{font-size:13px;display:flex;gap:8px;margin-top:4px}
+  .alert .ck{font-weight:800}
+
+  /* TEXTURA */
+  .tex{height:150px;border-radius:14px;position:relative;overflow:hidden;border:1px solid var(--border)}
+  .tex-grid{background-color:#fff;background-image:linear-gradient(var(--green-mid) 1px,transparent 1px),linear-gradient(90deg,var(--green-mid) 1px,transparent 1px);background-size:22px 22px}
+  .tex-grid-deep{background-color:var(--green-deep);background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);background-size:22px 22px}
+  .tex-dots{background-color:var(--bg);background-image:radial-gradient(var(--green-mid) 1.4px,transparent 1.6px);background-size:18px 18px}
+  .tex-cap{font-size:13px;font-weight:700;margin-top:12px}
+  .tex-sub{font-size:12px;color:var(--ink-60);margin-top:3px;line-height:1.4}
+
+  /* ICONOS */
+  .icons{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px;margin-top:30px}
+  .ico{background:var(--bg);border-radius:14px;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+  .ico svg{width:36px;height:36px;stroke:var(--green);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .ico span{font-size:12px;font-weight:600;color:var(--ink-60)}
+
+  /* DATAVIZ */
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px}
+  .chartcard{background:var(--bg);border-radius:14px;padding:28px}
+  .chartcard h4{font-size:15px;margin-bottom:2px}
+  .chartcard .cu{font-size:12px;color:var(--ink-60);margin-bottom:22px}
+  .pbar{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--green-light),var(--green-mid),var(--green));position:relative;margin:34px 0 10px}
+  .pbar .mk{position:absolute;top:-26px;transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+  .pbar .mk::after{content:"";position:absolute;left:50%;top:20px;width:2px;height:14px;background:var(--ink);transform:translateX(-50%)}
+  .pbar-x{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-60);font-weight:600}
+  .bars{display:flex;align-items:flex-end;gap:14px;height:150px}
+  .bars .bar{flex:1;border-radius:6px 6px 0 0;background:var(--green-mid);position:relative}
+  .bars .bar.hi{background:var(--green)}
+  .bars .bar span{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:12px;font-weight:700;color:var(--ink)}
+  .bars-x{display:flex;gap:14px;margin-top:8px}
+  .bars-x span{flex:1;text-align:center;font-size:11px;color:var(--ink-60);font-weight:600}
+
+  /* CONTRASTE */
+  .pairs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-top:30px}
+  .pair{border-radius:12px;padding:24px;font-weight:700;font-size:16px;border:1px solid var(--border)}
+  .pair small{display:block;font-weight:600;font-size:11px;opacity:.85;margin-top:6px;text-transform:uppercase;letter-spacing:.05em}
+
+  /* TABLAS */
+  table.bb{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}
+  table.bb th{text-align:left;background:var(--bg);padding:12px 14px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--green);font-weight:700}
+  table.bb td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink-60)}
+  table.bb td b{color:var(--ink)}
+
+  /* MOTION */
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+  .motion-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-top:30px}
+  .mdemo{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:24px;min-height:160px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+  .mdemo .mt{font-size:13px;font-weight:700}
+  .mdemo .ms{font-size:12px;color:var(--ink-60);margin-top:3px}
+  .mbtn{margin-top:auto;align-self:flex-start;background:var(--green);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-weight:600;font-size:13px;font-family:inherit;cursor:pointer;transition:transform .15s ease,background .15s ease}
+  .mbtn:hover{transform:translateY(-2px);background:var(--green-deep)}
+  .mcard{margin-top:auto;background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;font-size:13px;font-weight:600;transition:transform .2s ease,box-shadow .2s ease}
+  .mcard:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(0,0,0,.08)}
+  .mchip{margin-top:auto;align-self:flex-start}
+  .mchip .chip{cursor:pointer;transition:all .15s ease}
+
+  /* APLICACIONES */
+  .apps{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px;align-items:start}
+  .screen{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.05)}
+  .screen .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
+  .screen .body{padding:22px 18px}
+  .post{aspect-ratio:1/1;border-radius:16px;background:var(--green-deep);color:#fff;padding:30px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .post::before{content:"";position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.10) 1px,transparent 1px);background-size:26px 26px;-webkit-mask:radial-gradient(120% 90% at 80% 12%,#000,transparent 70%);mask:radial-gradient(120% 90% at 80% 12%,#000,transparent 70%)}
+  .post .pc{position:relative;z-index:1}
+  .caption{font-size:12px;color:var(--ink-60);margin-top:10px}
+  .sig{display:flex;gap:24px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-top:24px}
+  .sig .siso{width:60px;height:60px;border-radius:16px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;flex:none}
+  .sig .siso sup{font-size:.5em}
+
+  .note{background:var(--green-light);border:1px solid var(--green-mid);border-radius:12px;padding:20px 24px;margin-top:30px;font-size:14px;max-width:760px;color:var(--green-deep)}
+  .note b{color:var(--green-deep)}
+
+  footer{background:var(--green-deep);color:#fff;padding:64px 0;text-align:center}
+  footer .wordmark{color:#fff}
+  footer .wordmark .pe{color:var(--green-mid)}
+  footer .contact{margin-top:18px;font-size:14px;color:#A9CFC2;font-weight:600}
+  footer p{margin:14px auto 0;color:#6f9a8b;font-size:13px}
+
+  @media(max-width:720px){
+    .wrap{padding:0 22px}
+    .cols,.three,.stats,.charts,.apps,.verdicts{grid-template-columns:1fr}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .toc-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<header class="cover">
+  <div class="wrap">
+    <div class="iso">m<sup>2</sup></div>
+    <h1>Brand<br>book</h1>
+    <div class="sub">m2peru — Sistema de identidad visual y verbal. <b>El valor real de tu metro cuadrado.</b></div>
+    <div class="meta">Versión 1.0 · 2026 · Documento interno</div>
+  </div>
+</header>
+
+<!-- CONTENIDO -->
+<section class="toc">
+  <div class="wrap">
+    <div class="lbl">Contenido</div>
+    <div class="toc-grid">
+      <a href="#esencia"><span class="tn">01</span><span class="tt">Esencia de marca</span></a>
+      <a href="#logo"><span class="tn">02</span><span class="tt">Logotipo</span></a>
+      <a href="#color"><span class="tn">03</span><span class="tt">Color</span></a>
+      <a href="#veredictos"><span class="tn">04</span><span class="tt">Sistema de veredictos</span></a>
+      <a href="#tipografia"><span class="tn">05</span><span class="tt">Tipografía</span></a>
+      <a href="#producto"><span class="tn">06</span><span class="tt">El producto</span></a>
+      <a href="#ui"><span class="tn">07</span><span class="tt">Elementos de interfaz</span></a>
+      <a href="#voz"><span class="tn">08</span><span class="tt">Voz y tono</span></a>
+      <a href="#mensajes"><span class="tn">09</span><span class="tt">Posicionamiento y mensajes</span></a>
+      <a href="#textura"><span class="tn">10</span><span class="tt">Textura y patrón</span></a>
+      <a href="#iconos"><span class="tn">11</span><span class="tt">Iconografía</span></a>
+      <a href="#datos"><span class="tn">12</span><span class="tt">Datos y métricas</span></a>
+      <a href="#dataviz"><span class="tn">13</span><span class="tt">Visualización de datos</span></a>
+      <a href="#foto"><span class="tn">14</span><span class="tt">Imagen y fotografía</span></a>
+      <a href="#layout"><span class="tn">15</span><span class="tt">Layout y espaciado</span></a>
+      <a href="#contraste"><span class="tn">16</span><span class="tt">Accesibilidad y contraste</span></a>
+      <a href="#motion"><span class="tn">17</span><span class="tt">Motion y animación</span></a>
+      <a href="#aplicaciones"><span class="tn">18</span><span class="tt">Aplicaciones</span></a>
+      <a href="#resumen"><span class="tn">19</span><span class="tt">Resumen de marca</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ESENCIA -->
+<section id="esencia">
+  <div class="wrap">
+    <div class="kicker">01 — Esencia de marca</div>
+    <h2 style="font-size:40px">El valor real de tu<br>metro cuadrado.</h2>
+    <p class="lead" style="margin-top:24px">m2peru le dice a cualquier persona, sin jerga, dos cosas sobre una propiedad: <b>cuánto vale</b> frente al mercado de su distrito, y <b>si de verdad conviene</b> como inversión una vez descontadas hipoteca, alquiler e inflación. Datos reales, lenguaje claro y honestidad incluso cuando el número incomoda.</p>
+
+    <div class="cols">
+      <div class="card">
+        <h4>Propósito</h4>
+        <p style="font-size:15px">Que decidir sobre un inmueble deje de depender de la corazonada o del vendedor. Poner los números reales al alcance de cualquiera.</p>
+      </div>
+      <div class="card">
+        <h4>Promesa</h4>
+        <p style="font-size:15px">«Te decimos la verdad sobre tu metro cuadrado.» Comparables reales, cuentas claras y un veredicto que entiendes sin ser experto.</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">2</div><div class="l">Herramientas: valuar + invertir</div></div>
+      <div class="stat"><div class="n">16</div><div class="l">Años de inflación BCRP (2010–26)</div></div>
+      <div class="stat"><div class="n">S/&amp;$</div><div class="l">Soles y dólares</div></div>
+      <div class="stat"><div class="n">100%</div><div class="l">Gratis, sin tarjeta</div></div>
+    </div>
+    <p style="margin-top:14px;font-size:12px;color:var(--ink-30)">Cifras del producto, no de tracción. Actualizar con métricas de uso cuando existan.</p>
+
+    <h4 style="margin-top:46px;font-size:22px">Personalidad / arquetipo</h4>
+    <p style="font-size:15px"><b>El asesor honesto.</b> Sabe de números y de mercado, pero no presume: te lo explica simple y te dice la verdad aunque no sea la que querías oír. Ni el gurú inalcanzable ni el vendedor que infla. Alguien de confianza que te cuida la plata.</p>
+
+    <h4 style="margin-top:46px;font-size:22px">Valores</h4>
+    <div class="three">
+      <div class="card"><h4>Claridad</h4><p style="font-size:14px">Si no se entiende a la primera, está mal escrito. Cero jerga.</p></div>
+      <div class="card"><h4>Honestidad</h4><p style="font-size:14px">Mostramos también lo incómodo: la pérdida real, el costo de oportunidad.</p></div>
+      <div class="card"><h4>Datos</h4><p style="font-size:14px">Comparables reales y BCRP. Nada de cifras infladas para vender.</p></div>
+      <div class="card"><h4>Accesible</h4><p style="font-size:14px">Para cualquiera, no solo para inversionistas con léxico financiero.</p></div>
+      <div class="card"><h4>Local</h4><p style="font-size:14px">Pensado para el mercado peruano: distritos, soles, inflación BCRP.</p></div>
+    </div>
+
+    <h4 style="margin-top:46px;font-size:22px">A quién le hablamos</h4>
+    <div class="cols">
+      <div class="card"><h4>El que va a comprar o vender</h4><p style="font-size:14px">Quiere saber si el precio es justo antes de negociar o publicar. No es experto y no quiere serlo: quiere una respuesta clara.</p></div>
+      <div class="card"><h4>El que evalúa invertir</h4><p style="font-size:14px">Mira la propiedad como inversión y necesita saber si, con hipoteca e inflación, de verdad le gana a dejar la plata en el banco.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO -->
+<section id="logo">
+  <div class="wrap">
+    <div class="kicker">02 — Logotipo</div>
+    <h2 style="font-size:40px">Identidad principal</h2>
+    <p style="margin-top:18px">La marca se expresa con el <b>isotipo</b> (monograma «m²» en mosaico redondeado) y el <b>logotipo / wordmark</b> «m2peru.com», en Inter. El acento verde recae siempre sobre «peru». En la app el wordmark encabeza cada pantalla, arriba a la izquierda.</p>
+
+    <div class="logo-row">
+      <div class="logo-box"><div class="iso-tile">m<sup>2</sup></div></div>
+      <div class="logo-box"><span class="wordmark">m2<span class="pe">peru</span>.com</span></div>
+    </div>
+
+    <h4 style="margin-top:34px;font-size:20px">Versiones sobre fondo</h4>
+    <div class="logo-row">
+      <div class="logo-box"><span class="wordmark">m2<span class="pe">peru</span>.com</span></div>
+      <div class="logo-box deep"><span class="wordmark">m2<span class="pe">peru</span>.com</span></div>
+      <div class="logo-box green"><span class="wordmark">m2<span class="pe">peru</span>.com</span></div>
+    </div>
+
+    <h4 style="margin-top:34px;font-size:20px">Área de seguridad y tamaño mínimo</h4>
+    <p style="margin-top:10px">Deja alrededor del logo un margen libre mínimo igual a la altura de la «m» del wordmark (lo llamamos <b>X</b>). Dentro de esa zona no entra texto, gráficos ni el borde de la pieza.</p>
+    <div class="cols" style="margin-top:24px">
+      <div class="card" style="background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;align-items:flex-start;gap:14px">
+        <div class="clearspace">
+          <span class="x t">X</span><span class="x l">X</span>
+          <span class="wordmark" style="font-size:24px">m2<span class="pe">peru</span>.com</span>
+        </div>
+        <p style="font-size:12px;color:var(--ink-60)">Área de seguridad = X (altura de la «m») por cada lado.</p>
+      </div>
+      <div class="card">
+        <h4>Tamaño mínimo</h4>
+        <ul>
+          <li>Wordmark: 110px de ancho (digital).</li>
+          <li>Isotipo «m²»: 28px (digital).</li>
+          <li>Favicon y avatares: usar siempre el isotipo, nunca el wordmark.</li>
+          <li>Por debajo del mínimo el wordmark pierde legibilidad: usa el isotipo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="card do">
+        <h4>Sí</h4>
+        <ul>
+          <li>Usar el isotipo «m²» como avatar (redes, favicon, perfiles).</li>
+          <li>Mantener el acento verde solo en «peru».</li>
+          <li>Versión blanca sobre fondos verde o verde profundo.</li>
+        </ul>
+      </div>
+      <div class="card dont">
+        <h4>No</h4>
+        <ul>
+          <li>Deformar, rotar o cambiar la proporción del logo.</li>
+          <li>Pintar todo el wordmark de verde o recolorearlo fuera de paleta.</li>
+          <li>Colocarlo sobre fondos de bajo contraste o sobre fotos sin máscara.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR -->
+<section id="color">
+  <div class="wrap">
+    <div class="kicker">03 — Color</div>
+    <h2 style="font-size:40px">Paleta</h2>
+    <p style="margin-top:18px">Un <b>verde</b> de confianza como único color de marca, sobre una base de <b>hueso y blanco</b> con tinta casi negra. La marca es deliberadamente sobria: el verde manda, los neutros dan aire. Los colores de veredicto (verde / ámbar / rojo) son funcionales y se reservan para resultados, no para decorar.</p>
+
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#0B6E4F"></div><div class="info"><div class="name">Verde m2</div><div class="hex">#0B6E4F</div><div class="role">Primario. Botones, acentos, isotipo, enlaces.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#074535"></div><div class="info"><div class="name">Verde profundo</div><div class="hex">#074535</div><div class="role">Fondos de impacto y texto verde sobre claro.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#C2E5D8"></div><div class="info"><div class="name">Verde medio</div><div class="hex">#C2E5D8</div><div class="role">Apoyo, bordes suaves, patrones.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E8F5F0"></div><div class="info"><div class="name">Verde claro</div><div class="hex">#E8F5F0</div><div class="role">Fondos de realce: rangos de mercado, notas.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#0F1117"></div><div class="info"><div class="name">Tinta</div><div class="hex">#0F1117</div><div class="role">Titulares y texto sobre fondo claro.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#6B6B6B"></div><div class="info"><div class="name">Gris medio</div><div class="hex">#6B6B6B</div><div class="role">Cuerpo secundario, hints, etiquetas.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F5F5F3;border-bottom:1px solid var(--border)"></div><div class="info"><div class="name">Hueso</div><div class="hex">#F5F5F3</div><div class="role">Fondo neutro y tarjetas suaves.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--border)"></div><div class="info"><div class="name">Blanco</div><div class="hex">#FFFFFF</div><div class="role">Lienzo de tarjetas. Máximo aire.</div></div></div>
+    </div>
+
+    <h4 style="margin-top:48px;font-size:18px">Proporción de uso</h4>
+    <div style="display:flex;height:46px;border-radius:10px;overflow:hidden;margin-top:14px;font-size:12px;font-weight:700;color:#fff">
+      <div style="flex:6;background:#F5F5F3;color:var(--ink);display:flex;align-items:center;justify-content:center">Hueso / Blanco 60%</div>
+      <div style="flex:3;background:#0B6E4F;display:flex;align-items:center;justify-content:center">Verde m2 30%</div>
+      <div style="flex:1;background:#074535;display:flex;align-items:center;justify-content:center">Profundo 10%</div>
+    </div>
+    <p style="margin-top:14px;font-size:14px;color:var(--ink-60)">La marca respira en claro. El verde se gana su protagonismo apareciendo poco y siempre con intención.</p>
+  </div>
+</section>
+
+<!-- VEREDICTOS -->
+<section id="veredictos" class="green">
+  <div class="wrap">
+    <div class="kicker">04 — Sistema de veredictos</div>
+    <h2 style="font-size:40px;color:#fff">Verde, ámbar, rojo:<br>el color que decide</h2>
+    <p style="margin-top:18px">El producto existe para dar un juicio claro. Por eso, además de la paleta de marca, hay un <b style="color:#fff">semáforo funcional</b> de tres colores que solo aparece en resultados: el score de una valuación y la alerta de inversión. Nunca se usa para decorar; cuando ves uno de estos colores, es porque hay un veredicto detrás.</p>
+
+    <div class="verdicts">
+      <div class="vd" style="background:#0a3a2c">
+        <div class="dot" style="background:#2E9E7B">A</div>
+        <b style="color:#fff">Bajo el mercado · Rentable</b>
+        <p style="color:#A9CFC2">Verde #0B6E4F. Buena oportunidad: el precio está por debajo de comparables, o la inversión supera sus pruebas.</p>
+      </div>
+      <div class="vd" style="background:#0a3a2c">
+        <div class="dot" style="background:#B8860B">B</div>
+        <b style="color:#fff">En el rango · Alerta</b>
+        <p style="color:#A9CFC2">Ámbar #B8860B. Coherente con el mercado, o pasa una prueba pero no la otra. Mirar con cuidado.</p>
+      </div>
+      <div class="vd" style="background:#0a3a2c">
+        <div class="dot" style="background:#C0392B">D</div>
+        <b style="color:#fff">Sobre el mercado · Pérdida</b>
+        <p style="color:#A9CFC2">Rojo #C0392B. Caro frente a comparables, o no supera inflación ni depósito. Hay que pensarlo.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:26px;font-size:14px">Regla: el semáforo <b style="color:#fff">comunica resultado, no estética</b>. El verde de veredicto coincide con el verde de marca a propósito: lo bueno se siente «de la casa». El ámbar y el rojo nunca se usan como color decorativo en la marca.</p>
+  </div>
+</section>
+
+<!-- TIPOGRAFIA -->
+<section id="tipografia">
+  <div class="wrap">
+    <div class="kicker">05 — Tipografía</div>
+    <h2 style="font-size:40px">Sistema tipográfico</h2>
+    <p style="margin-top:18px"><b>Inter</b> es la única familia y cubre todo el sistema, de ExtraBold a Regular. Limpia, neutra y legible en pantalla a cualquier tamaño. Para las cifras —el corazón del producto— se usa <b>tabular-nums</b>, de modo que los números se alineen en columnas y se lean como datos, no como texto.</p>
+
+    <div class="specimen">
+      <div class="type-row">
+        <div class="tag">H1 · Inter ExtraBold</div>
+        <div style="font-weight:800;font-size:44px;letter-spacing:-.035em">El valor real de tu metro cuadrado</div>
+      </div>
+      <div class="type-row">
+        <div class="tag">H2 · Inter Bold</div>
+        <div style="font-weight:700;font-size:30px;letter-spacing:-.02em">¿Conviene como inversión?</div>
+      </div>
+      <div class="type-row">
+        <div class="tag">Subtítulo · Inter SemiBold</div>
+        <div style="font-weight:600;font-size:20px">Comparamos tu precio con el mercado del distrito</div>
+      </div>
+      <div class="type-row">
+        <div class="tag">Cuerpo · Inter Regular</div>
+        <div style="font-weight:400;font-size:16px">Te decimos si el precio es justo y, si lo evalúas como inversión, si de verdad le gana a dejar la plata en el banco.</div>
+      </div>
+      <div class="type-row">
+        <div class="tag">Cifras · Inter Bold · tabular-nums</div>
+        <div class="num-demo">S/. 323,607 · 4.06% · $2,640/m²</div>
+      </div>
+    </div>
+
+    <div class="scale">
+      <span>ExtraBold 800</span><span>Bold 700</span><span>SemiBold 600</span><span>Medium 500</span><span>Regular 400</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTO -->
+<section id="producto" class="green">
+  <div class="wrap">
+    <div class="kicker">06 — El producto</div>
+    <h2 style="font-size:40px;color:#fff">Dos herramientas,<br>una sola pregunta: ¿me conviene?</h2>
+    <p style="margin-top:18px">m2peru no es un portal de avisos: es un evaluador. Todo lo que hace responde a si una propiedad vale lo que piden y si tiene sentido como inversión.</p>
+    <div class="cols">
+      <div class="card">
+        <h4>Valuador</h4>
+        <p style="font-size:15px">Wizard de 3 pasos (ubicación → características → precio). Compara el precio contra los percentiles de comparables reales del distrito y devuelve un veredicto claro: bajo, dentro o sobre el mercado.</p>
+      </div>
+      <div class="card">
+        <h4>Calculadora de inversión</h4>
+        <p style="font-size:15px">Toma el caso completo —hipoteca, alquiler, plusvalía e inflación— y dice si la inversión le gana a la inflación y a un depósito a plazo. Sin maquillar el resultado.</p>
+      </div>
+    </div>
+    <p style="margin-top:24px;font-size:14px">Principio de producto: <b style="color:#fff">una idea por pantalla</b>. Cada paso pregunta una sola cosa; el resultado da un solo veredicto, y luego el detalle para quien lo quiera.</p>
+  </div>
+</section>
+
+<!-- UI -->
+<section id="ui">
+  <div class="wrap">
+    <div class="kicker">07 — Elementos de interfaz</div>
+    <h2 style="font-size:40px">Botones, chips y tarjetas</h2>
+    <p style="margin-top:18px">Esquinas redondeadas (6 / 10 / 14px), bordes finos, sombras muy suaves y mucho aire. El verde se reserva para la acción principal y los aciertos. Componentes tomados de la app real.</p>
+
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:30px;align-items:center">
+      <span class="pill">Evaluar propiedad</span>
+      <span class="pill ghost">Atrás</span>
+      <span class="pill dark">Continuar</span>
+    </div>
+
+    <h4 style="margin-top:36px;font-size:18px">Chips de selección</h4>
+    <div class="chips">
+      <span class="chip">Departamento</span>
+      <span class="chip on">Casa</span>
+      <span class="chip">Oficina</span>
+      <span class="chip green-on">2 dorm</span>
+    </div>
+
+    <h4 style="margin-top:36px;font-size:18px">Score y tarjeta de resultado</h4>
+    <div class="cols">
+      <div class="card" style="background:#fff;border:1px solid var(--border)">
+        <div class="score-row">
+          <div class="scorebadge" style="background:var(--green)">A</div>
+          <div><b style="font-size:17px">Bajo el mercado</b><p style="font-size:13px;color:var(--ink-60);margin-top:2px">El precio está por debajo de comparables del distrito.</p></div>
+        </div>
+        <div style="margin-top:16px;background:var(--green-light);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;font-size:13px;color:var(--green-deep);font-weight:600">
+          <span>Rango de mercado (USD/m²)</span><span>$2,400 – $2,900</span>
+        </div>
+      </div>
+      <div class="card" style="background:#fff;border:1px solid var(--border)">
+        <h4>Mini alerta de inversión</h4>
+        <div class="alert" style="background:#FBEAE8;border-color:var(--rojo)">
+          <div class="at" style="color:#8E2A20">En resumen</div>
+          <div style="font-size:13px;color:#8E2A20">No le gana a la inflación ni al banco.</div>
+          <div class="line"><span class="ck" style="color:var(--rojo)">✗</span><span>¿Le gana a la inflación? 3.8% vs 4.1%</span></div>
+          <div class="line"><span class="ck" style="color:var(--rojo)">✗</span><span>¿Rinde más que el banco? 1.5% vs 4.5%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VOZ -->
+<section id="voz">
+  <div class="wrap">
+    <div class="kicker">08 — Voz y tono</div>
+    <h2 style="font-size:40px">Cómo hablamos</h2>
+    <div class="cols">
+      <div class="card">
+        <h4>Personalidad</h4>
+        <ul>
+          <li><b>Clara</b>: si no se entiende a la primera, se reescribe.</li>
+          <li><b>Honesta</b>: decimos lo incómodo, no solo lo que vende.</li>
+          <li><b>Cercana</b>: hablamos de «tú», como un amigo que sabe del tema.</li>
+          <li><b>Concreta</b>: cifras y veredictos, no adjetivos.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>La regla de oro: sin jerga</h4>
+        <p style="font-size:14px">Cambiamos el léxico de inversionista por preguntas que cualquiera entiende. No asumimos que el usuario sabe finanzas.</p>
+        <ul style="margin-top:10px">
+          <li>«Piso / valla» → <b>«¿Le gana a la inflación?» / «¿Rinde más que el banco?»</b></li>
+          <li>«Cap rate, plusvalía nominal» → se explican o se evitan.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 style="margin-top:40px;font-size:20px">Antes y después</h4>
+    <table class="bb">
+      <tr><th>Técnico (evitar)</th><th>Claro (m2)</th></tr>
+      <tr><td>«La plusvalía anualizada es inferior a la inflación del periodo.»</td><td><b>«La subida de precio no le gana a la inflación.»</b></td></tr>
+      <tr><td>«Net cap rate de 7% con flujo apalancado negativo.»</td><td><b>«Rinde 7% al año, pero el alquiler no cubre la cuota.»</b></td></tr>
+      <tr><td>«Veredicto: sub-óptimo vs. costo de oportunidad.»</td><td><b>«Te rendiría más la plata en el banco.»</b></td></tr>
+    </table>
+    <p style="margin-top:18px;font-size:15px;color:var(--ink-60)">Llamados a la acción en imperativo amable: <i>Evaluar propiedad</i>, <i>Calcular inversión</i>, <i>Ver el detalle</i>.</p>
+  </div>
+</section>
+
+<!-- MENSAJES -->
+<section id="mensajes">
+  <div class="wrap">
+    <div class="kicker">09 — Posicionamiento y mensajes</div>
+    <h2 style="font-size:40px">Sin humo inmobiliario.</h2>
+    <p class="lead" style="margin-top:18px">En un rubro lleno de precios inflados y promesas de plusvalía, m2 ocupa un territorio que nadie quiere: el de <b>decir la verdad con números</b>. Claro, local y del lado del que decide, no del que vende.</p>
+
+    <h4 style="margin-top:46px;font-size:20px">Sistema de líneas</h4>
+    <table class="bb">
+      <tr><th style="width:18%">Rol</th><th>Línea</th><th style="width:30%">Dónde se usa</th></tr>
+      <tr><td><b>Principal</b><br><span style="color:var(--ink-30);font-size:12px">qué es</span></td><td><b style="font-size:17px">El valor real de tu metro cuadrado.</b></td><td>Portada, hero, firma de marca</td></tr>
+      <tr><td><b>Apoyo</b><br><span style="color:var(--ink-30);font-size:12px">qué hace</span></td><td><b>Cuánto vale. Y si de verdad conviene.</b></td><td>Bajada, descripción de producto</td></tr>
+      <tr><td><b>Campaña</b><br><span style="color:var(--ink-30);font-size:12px">postura con filo</span></td><td><b>Sin humo inmobiliario.</b></td><td>Anuncios, posts, asuntos de email</td></tr>
+    </table>
+
+    <h4 style="margin-top:46px;font-size:20px">Los 3 pilares (con prueba)</h4>
+    <div class="three">
+      <div class="card">
+        <h4>01 · Claro</h4>
+        <p style="font-size:14px">Cualquiera lo entiende.</p>
+        <p style="font-size:13px;color:var(--ink-60);margin-top:10px"><b>Prueba:</b> veredictos en una palabra, alertas en preguntas («¿le gana a la inflación?»), cero jerga.</p>
+      </div>
+      <div class="card">
+        <h4>02 · Honesto</h4>
+        <p style="font-size:14px">Te decimos la verdad.</p>
+        <p style="font-size:13px;color:var(--ink-60);margin-top:10px"><b>Prueba:</b> mostramos la pérdida real por inflación y el costo de oportunidad, aunque desanime la compra.</p>
+      </div>
+      <div class="card">
+        <h4>03 · Con datos</h4>
+        <p style="font-size:14px">Comparables y BCRP.</p>
+        <p style="font-size:13px;color:var(--ink-60);margin-top:10px"><b>Prueba:</b> percentiles de propiedades reales del distrito e inflación oficial BCRP 2010–2026.</p>
+      </div>
+    </div>
+
+    <h4 style="margin-top:46px;font-size:20px">Principios de voz</h4>
+    <ul style="margin-left:18px">
+      <li><b>Claro antes que listo.</b> Preferimos la palabra simple a la elegante.</li>
+      <li><b>Sin jerga.</b> Si aparece un tecnicismo, se explica o se cambia por una pregunta.</li>
+      <li><b>Honesto con la cifra.</b> No escondemos el número malo.</li>
+      <li><b>Del lado del usuario.</b> Hablamos para quien decide, no para quien vende.</li>
+      <li><b>Frases cortas.</b> Como «Sin humo inmobiliario.».</li>
+    </ul>
+  </div>
+</section>
+
+<!-- TEXTURA -->
+<section id="textura">
+  <div class="wrap">
+    <div class="kicker">10 — Textura y patrón</div>
+    <h2 style="font-size:40px">La cuadrícula del metro cuadrado</h2>
+    <p style="margin-top:18px">El patrón de marca es una <b>cuadrícula</b>: la retícula del plano, del metro cuadrado, del dato. Es literal (m²) y conceptual (orden, medida, precisión). Se usa con sutileza, casi siempre desvaneciéndose hacia una esquina, al servicio del contenido y nunca compitiendo con él.</p>
+
+    <div class="three">
+      <div>
+        <div class="tex tex-grid"></div>
+        <div class="tex-cap">Cuadrícula clara · recomendada</div>
+        <div class="tex-sub">Líneas verde medio sobre blanco. Para fondos claros, portadas y secciones de aire. El patrón de la casa.</div>
+      </div>
+      <div>
+        <div class="tex tex-grid-deep"></div>
+        <div class="tex-cap">Cuadrícula sobre verde</div>
+        <div class="tex-sub">Líneas blancas a baja opacidad sobre verde profundo. Para bloques de impacto y posts.</div>
+      </div>
+      <div>
+        <div class="tex tex-dots"></div>
+        <div class="tex-cap">Malla de puntos</div>
+        <div class="tex-sub">Variante más ligera para fondos donde la retícula completa pesaría demasiado.</div>
+      </div>
+    </div>
+    <p style="margin-top:26px;font-size:14px">Regla: una textura por pieza, a baja opacidad y casi siempre con un <b>degradado de máscara</b> que la disuelve hacia un borde. La cuadrícula acompaña, no grita.</p>
+  </div>
+</section>
+
+<!-- ICONOGRAFIA -->
+<section id="iconos">
+  <div class="wrap">
+    <div class="kicker">11 — Iconografía</div>
+    <h2 style="font-size:40px">Iconos de línea, claros y consistentes</h2>
+    <p style="margin-top:18px">Iconos <b>de línea</b> (no rellenos), en verde m2, con trazo uniforme (~1.8px) y esquinas redondeadas. Un solo estilo: simples, geométricos, legibles a tamaño pequeño. Acompañan acciones y conceptos, nunca decoran.</p>
+    <div class="icons">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/><path d="M10 19v-5h4v5"/></svg><span>Propiedad</span></div>
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span>Valuar</span></div>
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Mercado</span></div>
+      <div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg><span>Calculadora</span></div>
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Soles</span></div>
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Veredicto</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DATOS -->
+<section id="datos" class="green">
+  <div class="wrap">
+    <div class="kicker">12 — Datos y métricas</div>
+    <h2 style="font-size:40px;color:#fff">El número es el protagonista</h2>
+    <p style="margin-top:18px">m2 vive de cifras, así que se muestran <b style="color:#fff">grandes y claras</b>: Inter Bold, tabular-nums, etiqueta corta debajo. Pocas a la vez, solo las que ayudan a decidir.</p>
+    <div class="stats">
+      <div class="stat" style="background:#0a3a2c;color:#fff"><div class="n">$2,640</div><div class="l" style="color:#A9CFC2">Mediana USD/m²</div></div>
+      <div class="stat" style="background:#0a3a2c;color:#fff"><div class="n">+4.2%</div><div class="l" style="color:#A9CFC2">vs. mediana del distrito</div></div>
+      <div class="stat" style="background:#0a3a2c;color:#fff"><div class="n">21.2%</div><div class="l" style="color:#A9CFC2">Inflación acumulada</div></div>
+      <div class="stat" style="background:#0a3a2c;color:#fff"><div class="n">47</div><div class="l" style="color:#A9CFC2">Comparables usados</div></div>
+    </div>
+    <p style="margin-top:26px;font-size:14px">Regla: la cifra siempre mucho más grande que su etiqueta. El símbolo (S/., $, %, +) va pegado al número. Nunca más de 4 métricas juntas.</p>
+  </div>
+</section>
+
+<!-- DATAVIZ -->
+<section id="dataviz">
+  <div class="wrap">
+    <div class="kicker">13 — Visualización de datos</div>
+    <h2 style="font-size:40px">Gráficas que se entienden de un vistazo</h2>
+    <p style="margin-top:18px">Una regla manda: <b>una escala de verdes más gris para el contexto</b>. Se resalta el dato que importa y el resto se atenúa. Sin 3D, sin sombras, mínima cuadrícula y cifras directamente sobre el gráfico.</p>
+
+    <div class="charts">
+      <div class="chartcard">
+        <h4>Rango de mercado</h4>
+        <div class="cu">Dónde cae tu precio entre los comparables</div>
+        <div class="pbar"><div class="mk" style="left:62%">Tu precio</div></div>
+        <div class="pbar-x"><span>P25 · $2,400</span><span>Mediana · $2,640</span><span>P75 · $2,900</span></div>
+      </div>
+      <div class="chartcard">
+        <h4>Barras</h4>
+        <div class="cu">Comparar y resaltar uno</div>
+        <div class="bars">
+          <div class="bar" style="height:48%"><span>2.4k</span></div>
+          <div class="bar hi" style="height:100%"><span>2.9k</span></div>
+          <div class="bar" style="height:62%"><span>2.6k</span></div>
+          <div class="bar" style="height:40%"><span>2.2k</span></div>
+        </div>
+        <div class="bars-x"><span>San Borja</span><span>Miraflores</span><span>Surco</span><span>Lince</span></div>
+      </div>
+    </div>
+
+    <div class="cols" style="margin-top:30px">
+      <div class="card do">
+        <h4>Sí</h4>
+        <ul>
+          <li>Resaltar en verde el dato clave; atenuar el resto en gris/verde claro.</li>
+          <li>Cifras sobre las barras o el marcador.</li>
+          <li>Mínima cuadrícula, mucho aire, tabular-nums.</li>
+        </ul>
+      </div>
+      <div class="card dont">
+        <h4>No</h4>
+        <ul>
+          <li>3D, sombras o brillos.</li>
+          <li>Arcoíris de colores fuera de paleta.</li>
+          <li>Usar rojo/ámbar como color de serie (son de veredicto).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOTOGRAFIA -->
+<section id="foto">
+  <div class="wrap">
+    <div class="kicker">14 — Imagen y fotografía</div>
+    <h2 style="font-size:40px">Inmuebles reales del Perú</h2>
+    <p style="margin-top:18px">Si la marca es honesta y local, las imágenes muestran <b>propiedades y barrios reales del Perú</b>: fachadas, edificios, planos, calles. Nada de renders de lujo ni stock genérico de «familia feliz con llaves». Tratamiento limpio, esquinas redondeadas, duotono verde opcional para unificar.</p>
+    <div class="cols">
+      <div class="card do">
+        <h4>Sí</h4>
+        <ul>
+          <li>Fachadas y barrios reales, planos, capturas de la app.</li>
+          <li>Duotono verde (m2 → verde profundo) para coherencia.</li>
+          <li>Esquinas redondeadas, igual que las tarjetas.</li>
+        </ul>
+      </div>
+      <div class="card dont">
+        <h4>No</h4>
+        <ul>
+          <li>Renders de lujo o stock de «inversionista sonriente».</li>
+          <li>Fotos frías o impersonales sin contexto local.</li>
+          <li>Texto sobre zonas sin contraste (usar máscara).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:20px">
+      <div style="height:120px;border-radius:12px;background:linear-gradient(135deg,#0B6E4F,#074535)"></div>
+      <div style="height:120px;border-radius:12px;background:linear-gradient(135deg,#0F1117,#0B6E4F)"></div>
+    </div>
+    <p style="font-size:12px;color:var(--ink-60);margin-top:10px">Ejemplo de duotono (verde m2 → verde profundo) para dar coherencia cuando las fotos vienen de fuentes distintas.</p>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<section id="layout">
+  <div class="wrap">
+    <div class="kicker">15 — Layout y espaciado</div>
+    <h2 style="font-size:40px">Aire, una idea por bloque</h2>
+    <p style="margin-top:18px">El <b>wordmark va arriba a la izquierda</b> como ancla de cada pantalla. Tarjetas centradas con ancho máximo (~560px en la app), márgenes generosos y una sola idea por pantalla. El orden transmite confianza; el aire, calma.</p>
+    <div class="three">
+      <div class="card"><h4>Tarjeta única</h4><p style="font-size:14px">El contenido vive en una tarjeta centrada de ancho contenido. Nada pega al borde.</p></div>
+      <div class="card"><h4>Una idea por paso</h4><p style="font-size:14px">El wizard pregunta una cosa por pantalla. El resultado da un veredicto, luego el detalle.</p></div>
+      <div class="card"><h4>Alineación</h4><p style="font-size:14px">Texto a la izquierda; cifras a la derecha con tabular-nums. Wordmark arriba-izquierda.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRASTE -->
+<section id="contraste">
+  <div class="wrap">
+    <div class="kicker">16 — Accesibilidad y contraste</div>
+    <h2 style="font-size:40px">Que siempre se lea</h2>
+    <p style="margin-top:18px">Combinaciones aprobadas. Regla simple: texto blanco sobre verde o verde profundo; tinta sobre fondos claros. El verde medio y el claro son para fondos y detalles, nunca para texto pequeño.</p>
+    <div class="pairs">
+      <div class="pair" style="background:#0B6E4F;color:#fff">Texto blanco<small>sobre Verde m2 · ok</small></div>
+      <div class="pair" style="background:#074535;color:#fff">Texto blanco<small>sobre Verde profundo · ok</small></div>
+      <div class="pair" style="background:#fff;color:#0F1117;border:1px solid var(--border)">Texto tinta<small>sobre Blanco · ok</small></div>
+      <div class="pair" style="background:#E8F5F0;color:#074535">Verde profundo<small>sobre Verde claro · ok</small></div>
+      <div class="pair" style="background:#F5F5F3;color:#0B6E4F">Verde m2<small>sobre Hueso · ok</small></div>
+      <div class="pair" style="background:#C2E5D8;color:#FFFFFF;border:1px solid var(--rojo)">Blanco sobre Verde medio<small>evitar · sin contraste</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- MOTION -->
+<section id="motion">
+  <div class="wrap">
+    <div class="kicker">17 — Motion y animación</div>
+    <h2 style="font-size:40px">Movimiento con intención</h2>
+    <p style="margin-top:18px">El movimiento es sutil, rápido y con propósito: confirmar una acción o guiar la atención, nunca decorar. Transiciones cortas (~150ms), curva ease-out. Pasa el cursor por los ejemplos.</p>
+
+    <div class="motion-grid">
+      <div class="mdemo">
+        <div><div class="mt">Botón</div><div class="ms">Sube y oscurece · 150ms</div></div>
+        <button class="mbtn">Evaluar propiedad</button>
+      </div>
+      <div class="mdemo">
+        <div><div class="mt">Tarjeta</div><div class="ms">Eleva con sombra · 200ms</div></div>
+        <div class="mcard">Mercado en Miraflores</div>
+      </div>
+      <div class="mdemo">
+        <div><div class="mt">Chip</div><div class="ms">Cambia de estado · 150ms</div></div>
+        <div class="mchip"><span class="chip">2 dorm</span></div>
+      </div>
+    </div>
+
+    <div class="three">
+      <div class="card"><h4>Rápido</h4><p style="font-size:14px">150–250ms. Si se nota lento, estorba.</p></div>
+      <div class="card"><h4>Suave</h4><p style="font-size:14px">ease-out: entra rápido y desacelera. Nunca lineal.</p></div>
+      <div class="card"><h4>Con propósito</h4><p style="font-size:14px">Da feedback o guía la atención. Nunca decora.</p></div>
+    </div>
+    <p style="margin-top:24px;font-size:13px;color:var(--ink-60)">Accesibilidad: se respeta <code>prefers-reduced-motion</code>. Este brandbook ya lo hace.</p>
+  </div>
+</section>
+
+<!-- APLICACIONES -->
+<section id="aplicaciones">
+  <div class="wrap">
+    <div class="kicker">18 — Aplicaciones</div>
+    <h2 style="font-size:40px">La marca, aplicada</h2>
+    <p style="margin-top:18px">El sistema en piezas reales: la app, un post de redes con la cuadrícula sobre verde, y la firma de correo.</p>
+
+    <div class="apps">
+      <div>
+        <div class="screen">
+          <div class="topbar">
+            <span class="wordmark" style="font-size:16px">m2<span class="pe">peru</span>.com</span>
+            <span style="font-size:12px;color:var(--ink-60)">Paso 3 de 3</span>
+          </div>
+          <div class="body">
+            <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em">Resultado</div>
+            <div class="score-row" style="margin-top:10px">
+              <div class="scorebadge" style="background:var(--green)">A</div>
+              <div><b style="font-size:16px">Bajo el mercado</b><p style="font-size:12px;color:var(--ink-60)">Buena oportunidad de compra.</p></div>
+            </div>
+            <div style="margin-top:14px;background:var(--green-light);border-radius:8px;padding:10px 13px;display:flex;justify-content:space-between;font-size:12px;color:var(--green-deep);font-weight:600"><span>Rango USD/m²</span><span>$2,400 – $2,900</span></div>
+          </div>
+        </div>
+        <div class="caption">App · pantalla de resultado del valuador</div>
+      </div>
+
+      <div>
+        <div class="post">
+          <div class="pc" style="display:flex;flex-direction:column;height:100%">
+            <div class="iso" style="width:48px;height:48px;border-radius:14px;font-size:22px;margin-bottom:0;background:#fff;color:var(--green)">m<sup>2</sup></div>
+            <div style="flex:1"></div>
+            <div style="font-weight:800;font-size:30px;letter-spacing:-.03em;line-height:1.08">Sin humo<br>inmobiliario.</div>
+            <div style="font-size:13px;color:#A9CFC2;margin-top:12px">Cuánto vale tu metro cuadrado. Y si de verdad conviene.</div>
+            <div style="flex:1"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:#A9CFC2"><span>m2peru.com</span><span>Gratis</span></div>
+          </div>
+        </div>
+        <div class="caption">Post de redes (1:1)</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:40px;font-size:18px">Firma de email</h4>
+    <div class="sig">
+      <div class="siso">m<sup>2</sup></div>
+      <div>
+        <div style="font-weight:800;font-size:18px">m2peru</div>
+        <div style="font-size:13px;color:var(--ink-60);font-weight:600"><span style="color:var(--green)">El valor real de tu metro cuadrado.</span></div>
+        <div style="font-size:13px;color:var(--ink-60);margin-top:8px">m2peru.com · hola@m2peru.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUMEN -->
+<section id="resumen" class="green">
+  <div class="wrap">
+    <div class="kicker">19 — Resumen de marca</div>
+    <h2 style="font-size:40px;color:#fff">m2 en una página</h2>
+    <p style="margin-top:18px">La chuleta rápida: si solo lees esto, ya sabes cómo se ve, suena y se siente m2.</p>
+    <div class="three" style="margin-top:34px">
+      <div class="card"><h4>Idea</h4><p style="font-size:14px">Claro, honesto y con datos. <b style="color:#fff">El valor real de tu metro cuadrado.</b></p></div>
+      <div class="card"><h4>Color</h4><p style="font-size:14px">Verde #0B6E4F + verde profundo #074535, sobre hueso y blanco. Tinta #0F1117.</p></div>
+      <div class="card"><h4>Tipografía</h4><p style="font-size:14px">Inter (ExtraBold→Regular). Cifras en tabular-nums.</p></div>
+      <div class="card"><h4>Textura</h4><p style="font-size:14px">Cuadrícula del m², sutil y desvanecida. Una por pieza.</p></div>
+      <div class="card"><h4>Voz</h4><p style="font-size:14px">Clara, honesta, sin jerga. Veredictos en una palabra, alertas en preguntas.</p></div>
+      <div class="card"><h4>Veredictos</h4><p style="font-size:14px">Semáforo funcional verde / ámbar / rojo. Solo en resultados, nunca decoración.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="wordmark">m2<span class="pe">peru</span>.com</span>
+  <div class="contact">El valor real de tu metro cuadrado.</div>
+  <p>Brandbook v1.0 · Documento interno · 2026</p>
+</footer>
+
+</body>
+</html>
