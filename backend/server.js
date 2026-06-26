@@ -3,7 +3,7 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { connect } from "./db.js";
-import { valuar, listDistricts, lookupListing } from "./valuator.js";
+import { valuar, listDistricts } from "./valuator.js";
 import { calcularInversion, validateCalculatorInput } from "./calculator.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,19 +33,6 @@ app.get("/api/distritos", async (_req, res) => {
   } catch (e) {
     console.error("[/api/distritos] ERROR:", e?.message);
     res.status(500).json({ error: "internal", message: e?.message });
-  }
-});
-
-// Autocompletar: busca la URL pegada (Urbania/Nexo/A donde vivir) en la base
-// ya scrapeada y devuelve los datos del inmueble para pre-llenar el formulario.
-app.post("/api/lookup", async (req, res) => {
-  const url = req.body?.url;
-  if (!url || typeof url !== "string") return res.status(400).json({ error: "url requerida" });
-  try {
-    res.json(await lookupListing(url));
-  } catch (e) {
-    console.error("[/api/lookup]", e?.message);
-    res.status(500).json({ error: "internal" });
   }
 });
 

@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  getDistritos, valuar, lookupUrl, TC_REF, DISTRITOS_FALLBACK,
-  TIPO_MAP, TIPO_REVERSE, slugify,
+  getDistritos, valuar, TC_REF, DISTRITOS_FALLBACK, TIPO_MAP, slugify,
 } from "./lib/api.js";
 
 const STEPS = ["Ubicación", "Características", "Precio"];
@@ -20,58 +19,17 @@ export default function Valuador() {
     distrito: "", tipo: "Departamento", areaTotal: "", areaConst: "",
     dorm: "3", moneda: "S/ soles", precio: "620000", intent: "comprar",
   });
-  const [urlBadge, setUrlBadge] = useState(false);
-  const [urlStatus, setUrlStatus] = useState(null); // "buscando" | "ok" | "no" | null
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const lookupTimer = useRef(null);
-  const distritosRef = useRef(distritos);
 
   useEffect(() => {
     getDistritos()
-      .then((d) => { if (d?.districts?.length) { setDistritos(d.districts); distritosRef.current = d.districts; } })
+      .then((d) => { if (d?.districts?.length) setDistritos(d.districts); })
       .catch(() => { /* se queda con el fallback */ });
   }, []);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-
-  // Pega un link de Urbania → busca en la base y autocompleta el formulario.
-  function onUrlInput(v) {
-    const isUrl = v.length > 12 && /urbania|nexo|adondevivir|^https?:/i.test(v);
-    setUrlBadge(false);
-    setUrlStatus(null);
-    if (lookupTimer.current) clearTimeout(lookupTimer.current);
-    if (!isUrl) return;
-    setUrlStatus("buscando");
-    lookupTimer.current = setTimeout(async () => {
-      try {
-        const r = await lookupUrl(v.trim());
-        if (!r.found) { setUrlStatus("no"); return; }
-        autofill(r.listing);
-        setUrlBadge(true);
-        setUrlStatus("ok");
-      } catch { setUrlStatus("no"); }
-    }, 600);
-  }
-
-  function autofill(L) {
-    setForm((f) => {
-      const next = { ...f };
-      if (L.district) {
-        const match = distritosRef.current.find(
-          (d) => d.name?.toLowerCase() === L.district.toLowerCase()
-        );
-        next.distrito = match ? (match.slug || slugify(match.name)) : slugify(L.district);
-      }
-      if (L.propertyType && TIPO_REVERSE[L.propertyType]) next.tipo = TIPO_REVERSE[L.propertyType];
-      if (L.area) { next.areaConst = String(Math.round(L.area)); next.areaTotal = String(Math.round(L.area)); }
-      if (L.bedrooms != null) next.dorm = L.bedrooms >= 5 ? "5 o más" : String(L.bedrooms);
-      if (L.price != null) next.precio = String(Math.round(L.price));
-      if (L.currency) next.moneda = L.currency === "USD" ? "USD dólares" : "S/ soles";
-      return next;
-    });
-  }
 
   async function evaluar() {
     setError(null);
@@ -141,27 +99,7 @@ export default function Valuador() {
           <div className={`panel ${step === 1 ? "active" : ""}`}>
             <p className="panel-eyebrow">Paso 1 de 3</p>
             <h1 className="panel-title">¿Cuál es la propiedad?</h1>
-            <p className="panel-sub">Pega el link del portal y llenamos los datos automáticamente, o ingrésalos tú.</p>
-
-            <div className="field">
-              <label className="field-label">Link de la propiedad</label>
-              <span className="field-hint">Copia la URL de Urbania, Nexo o cualquier portal inmobiliario</span>
-              <div className="url-wrap">
-                <input type="url" placeholder="https://urbania.pe/inmueble/..." autoComplete="off"
-                  onChange={(e) => onUrlInput(e.target.value)} />
-                <div className={`url-detected ${urlBadge ? "show" : ""}`}>
-                  <svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7l3 3 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  Autodetectado
-                </div>
-              </div>
-              {urlStatus === "buscando" && <span className="field-hint" style={{ marginTop: 6 }}>Buscando la propiedad…</span>}
-              {urlStatus === "ok" && <span className="field-hint" style={{ marginTop: 6, color: "var(--green)" }}>✓ Datos cargados. Revisa y continúa.</span>}
-              {urlStatus === "no" && <span className="field-hint" style={{ marginTop: 6 }}>No encontramos esa propiedad en nuestra base. Ingresa los datos a mano.</span>}
-            </div>
-
-            <div className="or-divider">
-              <div className="or-divider-line" /><span className="or-divider-text">o ingresa manualmente</span><div className="or-divider-line" />
-            </div>
+            <p className="panel-sub">Ingresa los datos de la propiedad que quieres evaluar.</p>
 
             <div className="field">
               <label className="field-label">Distrito</label>
