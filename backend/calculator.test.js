@@ -89,6 +89,22 @@ test("flujo de alquiler no es autosuficiente (déficit mensual)", () => {
   assert.ok(approx(r.alquiler.flujoNetoMensual, -127.6, 0.5));                                    // C111
 });
 
+test("proyección año a año: estructura y crecimiento compuesto", () => {
+  const r = calcularInversion({ ...SURQUILLO, horizonteProyeccion: 10 });
+  const p = r.proyeccion;
+  assert.equal(p.filas.length, 10);
+  assert.equal(p.filas[0].anio, 1);
+  // base = venta promedio (310,000) y g/π definidos
+  assert.ok(approx(p.base, 310000, 1));
+  assert.ok(p.g >= 0 && p.pi > 0);
+  // valor del inmueble compuesto: año10 = base*(1+g)^10
+  const esperado = p.base * Math.pow(1 + p.g, 10);
+  assert.ok(approx(p.filas[9].valorInmueble, esperado, 50)); // tol por g redondeado
+  // acumulados crecientes
+  assert.ok(p.filas[9].rentaAcum > p.filas[0].rentaAcum);
+  assert.ok(p.filas[9].inflacionAcumPct > p.filas[0].inflacionAcumPct);
+});
+
 test("descarte rápido: Surquillo dispara doble alerta (rojo)", () => {
   const r = calcularInversion(SURQUILLO);
   // Plusvalía optimista (~3.8%) < inflación del periodo (~4.06%)

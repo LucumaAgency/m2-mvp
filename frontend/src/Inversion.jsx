@@ -13,6 +13,7 @@ const DEFAULTS = {
   alquilerBrutoMensual: 1890, mesesSinAlquilar: 1,
   precioMercadoCompraUsdM2: 1769, alquilerPromedioMercadoUsd: 504,
   precioVentaOptimista: 320000, precioVentaConservador: 300000,
+  horizonteProyeccion: 10,
 };
 
 const FIELDS = [
@@ -28,6 +29,7 @@ const FIELDS = [
   { k: "alquilerBrutoMensual", l: "Alquiler bruto mensual (S/.)", t: "number" },
   { k: "precioVentaConservador", l: "Precio venta conservador (S/.)", t: "number" },
   { k: "precioVentaOptimista", l: "Precio venta optimista (S/.)", t: "number" },
+  { k: "horizonteProyeccion", l: "Años a proyectar", t: "number" },
 ];
 
 const VERDICT_UI = {
@@ -179,8 +181,52 @@ function Resultado({ res }) {
         <p className="field-hint" style={{ marginTop: 6 }}>
           Capital propio invertido (real): {soles(res.capital.real)} · perdido solo por inflación: {soles(res.capital.perdidaPorInflacion)}.
         </p>
+
+        {res.proyeccion && <Proyeccion p={res.proyeccion} />}
       </div>
     </div>
+  );
+}
+
+function Proyeccion({ p }) {
+  return (
+    <>
+      <div className="section-sep" style={{ height: 1, background: "var(--border)", margin: "22px 0" }} />
+      <p className="panel-eyebrow">Proyección año a año (si mantienes la propiedad)</p>
+      <p className="field-hint" style={{ marginBottom: 10 }}>
+        Desde hoy, valor base {soles(p.base)} · plusvalía proyectada {pct(p.g)} al año · inflación {pct(p.pi)} al año.
+      </p>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5 }}>
+          <thead>
+            <tr style={{ textAlign: "right", color: "var(--ink-60)" }}>
+              <th style={{ textAlign: "left", fontWeight: 500, padding: "6px 0" }}>Año</th>
+              <th>Valor inmueble</th>
+              <th>Renta neta</th>
+              <th>Rentab. total</th>
+              <th>Inflación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {p.filas.map((f) => {
+              const gana = f.rentabilidadTotalPct >= f.inflacionAcumPct;
+              return (
+                <tr key={f.anio} style={{ borderTop: "1px solid var(--border)" }}>
+                  <td style={{ padding: "7px 0" }}>{f.anio}</td>
+                  <td style={{ textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{soles(f.valorInmueble)}</td>
+                  <td style={{ textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{soles(f.rentaAnualNeta)}</td>
+                  <td style={{ textAlign: "right", fontWeight: 600, color: gana ? "var(--green-text)" : "var(--ink)", fontVariantNumeric: "tabular-nums" }}>{pct(f.rentabilidadTotalPct)}</td>
+                  <td style={{ textAlign: "right", color: "var(--ink-60)", fontVariantNumeric: "tabular-nums" }}>{pct(f.inflacionAcumPct)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="field-hint" style={{ marginTop: 8 }}>
+        Rentabilidad total = plusvalía acumulada + alquiler acumulado, sobre el valor base. En verde, los años en que le gana a la inflación.
+      </p>
+    </>
   );
 }
 

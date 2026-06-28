@@ -28,6 +28,7 @@ const DEFAULTS = {
   irVentaPct: 0.05,         // 5% sobre ganancia de capital
   opexPorM2: 5,             // S/.5 / m² / mes (mantenimiento + gestión + predial)
   comisionVentaPct: 0.05,   // 5% del precio de venta
+  horizonteProyeccion: 10,  // años a proyectar hacia el futuro desde la evaluación
   // comisión de alquiler: 1 mes de renta bruta, una sola vez
 };
 
@@ -96,6 +97,39 @@ function round(n, decimals = 2) {
   if (n == null || !Number.isFinite(n)) return null;
   const p = Math.pow(10, decimals);
   return Math.round(n * p) / p;
+}
+
+// Inflación promedio BCRP de los últimos 10 años disponibles (para proyección futura).
+function inflacionPromedioReciente() {
+  const ys = Object.keys(INFLACION_BCRP).map(Number).sort((a, b) => b - a).slice(0, 10);
+  return ys.reduce((s, y) => s + INFLACION_BCRP[y], 0) / ys.length;
+}
+
+// Tabla de proyección año a año HACIA EL FUTURO desde la fecha de evaluación.
+// Mismo esquema que el scanner: valor del inmueble crece con `g`, la renta neta
+// crece con la inflación `pi`, y se acumulan % de plusvalía, renta e inflación.
+function proyeccionAnual({ base, g, pi, n, rentaNetaAnual }) {
+  const N = Math.min(Math.max(Math.round(n || 10), 1), 30);
+  const filas = [];
+  let rentaAcum = 0;
+  for (let a = 1; a <= N; a++) {
+    const valor = base * Math.pow(1 + g, a);
+    const renta = rentaNetaAnual * Math.pow(1 + pi, a - 1);
+    rentaAcum += renta;
+    const plusPct = Math.pow(1 + g, a) - 1;
+    const rentaPct = base ? rentaAcum / base : 0;
+    filas.push({
+      anio: a,
+      valorInmueble: round(valor),
+      rentaAnualNeta: round(renta),
+      rentaAcum: round(rentaAcum),
+      plusvaliaAcumPct: round(plusPct, 4),
+      rentaAcumPct: round(rentaPct, 4),
+      rentabilidadTotalPct: round(plusPct + rentaPct, 4),
+      inflacionAcumPct: round(Math.pow(1 + pi, a) - 1, 4),
+    });
+  }
+  return filas;
 }
 
 // ── Cálculo principal ─────────────────────────────────────────────
@@ -324,6 +358,25 @@ export function calcularInversion(raw) {
     },
   };
 
+  // ── Proyección año a año hacia el futuro (desde la fecha de evaluación) ──
+  // Base: valor de mercado estimado hoy (precio de venta promedio).
+  // g por defecto: conservador = min(plusvalía histórica anualizada, inflación).
+  // π por defecto: promedio BCRP de los últimos 10 años.
+  const piProy = o.inflacionProyectada != null ? Number(o.inflacionProyectada) : inflacionPromedioReciente();
+  const gProy = o.plusvaliaProyectada != null
+    ? Number(o.plusvaliaProyectada)
+    : Math.min(plusvaliaConservador.anualizada, piProy);
+  const baseProy = ventaPromedio;
+  const horizonte = Math.min(Math.max(Math.round(o.horizonteProyeccion || 10), 1), 30);
+  const proyeccion = {
+    base: round(baseProy),
+    g: round(gProy, 4),
+    pi: round(piProy, 4),
+    horizonte,
+    rentaNetaAnual: round(ingresoNetoAnual),
+    filas: proyeccionAnual({ base: baseProy, g: gProy, pi: piProy, n: horizonte, rentaNetaAnual: ingresoNetoAnual }),
+  };
+
   return {
     ok: true,
     modo: financiado ? "financiado" : "contado",
@@ -393,6 +446,7 @@ export function calcularInversion(raw) {
       contadoConservador: costoOportunidad((precioCompra + Number(o.gastosNotariales || 0)) * (1 + infAcum), escenarios.contado.conservador.utilidadTotal),
     },
     descarteRapido,
+    proyeccion,
     verdict,
   };
 }
