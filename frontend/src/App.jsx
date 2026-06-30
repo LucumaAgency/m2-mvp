@@ -17,8 +17,9 @@ export default function Valuador() {
   const [distritos, setDistritos] = useState(DISTRITOS_FALLBACK.map((n) => ({ name: n, slug: slugify(n) })));
   const [form, setForm] = useState({
     distrito: "", tipo: "Departamento", areaTotal: "", areaConst: "",
-    dorm: "3", moneda: "S/ soles", precio: "620000", intent: "comprar",
+    dorm: "3", moneda: "S/ soles", precio: "", intent: "comprar",
   });
+  const [precioTouched, setPrecioTouched] = useState(false);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,6 +31,31 @@ export default function Valuador() {
   }, []);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  function selectedDistrict() {
+    return distritos.find((d) => (d.slug || slugify(d.name)) === form.distrito)
+      || distritos.find((d) => d.name === form.distrito) || null;
+  }
+
+  // Precio aproximado = mediana USD/m² del distrito × área total, en la moneda elegida.
+  function marketEstimate(moneda = form.moneda) {
+    const d = selectedDistrict();
+    const med = d?.stats?.median_price_usd_per_m2_venta;
+    const area = Number(form.areaTotal || form.areaConst);
+    if (!med || !area || area < 10) return null;
+    const usd = med * area;
+    const value = Math.round(moneda.startsWith("USD") ? usd : usd * TC_REF);
+    return { value, perM2Usd: Math.round(med), area, distrito: d.name };
+  }
+
+  // Al llegar al paso 3, pre-llena el precio con el estimado de mercado
+  // (salvo que el usuario ya lo haya escrito a mano).
+  useEffect(() => {
+    if (step !== 3 || precioTouched) return;
+    const e = marketEstimate();
+    if (e) setForm((f) => ({ ...f, precio: String(e.value) }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   async function evaluar() {
     setError(null);
@@ -63,6 +89,9 @@ export default function Valuador() {
   }
 
   if (result) return <Resultado result={result} form={form} onReset={() => setResult(null)} />;
+
+  const estimate = marketEstimate();
+  const monedaSym = form.moneda.startsWith("USD") ? "$" : "S/ ";
 
   return (
     <>
@@ -187,11 +216,25 @@ export default function Valuador() {
             <div className="field">
               <label className="field-label">Precio de venta</label>
               <div className="price-wrap">
-                <select value={form.moneda} onChange={(e) => set("moneda", e.target.value)}>
+                <select value={form.moneda} onChange={(e) => {
+                  const v = e.target.value;
+                  setForm((f) => ({ ...f, moneda: v }));
+                  if (!precioTouched) { const est = marketEstimate(v); if (est) setForm((f) => ({ ...f, precio: String(est.value) })); }
+                }}>
                   <option>S/ soles</option><option>USD dólares</option>
                 </select>
-                <input type="number" placeholder="ej: 650000" value={form.precio} onChange={(e) => set("precio", e.target.value)} />
+                <input type="number" placeholder="ej: 650000" value={form.precio}
+                  onChange={(e) => { setPrecioTouched(true); set("precio", e.target.value); }} />
               </div>
+              {!precioTouched && estimate && (
+                <span className="field-hint" style={{ marginTop: 6, display: "flex", alignItems: "center" }}>
+                  Estimado de mercado: {monedaSym}{estimate.value.toLocaleString("es-PE")} · {estimate.area} m² × ${estimate.perM2Usd}/m² (mediana en {estimate.distrito})
+                  <InfoTip>
+                    Es solo un punto de partida, calculado con el precio típico por m² del distrito.
+                    Si conoces el precio real que piden (o al que quieres vender), reemplázalo.
+                  </InfoTip>
+                </span>
+              )}
             </div>
 
             <div className="section-sep" />
