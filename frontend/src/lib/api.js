@@ -26,7 +26,7 @@ export async function calcular(payload) {
 
 // TC referencial para convertir soles → USD cuando el valuador necesita USD.
 // El catálogo de comparables está en USD/m². Ajustable.
-export const TC_REF = 3.7;
+export const TC_REF = 3.4;
 
 // Distritos de respaldo si el backend (Mongo) no responde, para que el form
 // siga siendo navegable.
