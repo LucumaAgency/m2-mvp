@@ -7,9 +7,9 @@ import {
 const STEPS = ["Ubicación", "Características", "Precio"];
 
 const VERDICT_UI = {
-  BAJO_MERCADO:  { letra: "A", color: "#0B6E4F", titulo: "Bajo el mercado", sub: "El precio está por debajo de comparables del distrito. Buena oportunidad de compra." },
-  DENTRO_RANGO:  { letra: "B", color: "#B8860B", titulo: "Dentro del rango", sub: "El precio es coherente con el mercado de la zona." },
-  SOBRE_MERCADO: { letra: "D", color: "#C0392B", titulo: "Sobre el mercado", sub: "El precio supera a comparables del distrito. Margen para negociar." },
+  BAJO_MERCADO:  { letra: "A", color: "#0B6E4F", bg: "#E8F5F0", titulo: "Está barato", tag: "Bajo el mercado", sub: "Pagarías menos que propiedades parecidas en la zona. Buena señal para comprar." },
+  DENTRO_RANGO:  { letra: "B", color: "#B8860B", bg: "#FBF3E0", titulo: "Precio normal", tag: "Dentro del rango", sub: "El precio va en línea con lo que se paga en la zona." },
+  SOBRE_MERCADO: { letra: "C", color: "#C0392B", bg: "#FBEAE8", titulo: "Está caro", tag: "Sobre el mercado", sub: "Estás pagando más que propiedades parecidas. Hay margen para negociar." },
 };
 
 export default function Valuador() {
@@ -250,6 +250,20 @@ function Resultado({ result, form, onReset }) {
     area: areaInput || undefined,
   };
 
+  // Posición del precio del usuario en la barra barato→caro y texto coloquial.
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const upm = result.has_price ? result.input.price_usd_per_m2 : null;
+  const span = (m.p75 - m.p25) || 1;
+  const pos = upm != null ? clamp((upm - m.p25) / span, 0, 1) * 100 : null;
+  const aDiff = result.diff_pct != null ? Math.abs(result.diff_pct) : null;
+  const diffText = !result.has_price ? null
+    : aDiff < 2 ? "prácticamente en lo normal"
+    : result.diff_pct < 0 ? `${aDiff}% más barato que lo normal`
+    : `${result.diff_pct}% más caro que lo normal`;
+  const tipoLabel = result.property_type
+    ? result.property_type.charAt(0).toUpperCase() + result.property_type.slice(1)
+    : "propiedad";
+
   return (
     <>
       <nav>
@@ -262,33 +276,73 @@ function Resultado({ result, form, onReset }) {
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
               <div style={{ width: 64, height: 64, borderRadius: 16, background: ui.color, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, fontWeight: 600 }}>{ui.letra}</div>
               <div>
-                <h1 className="panel-title" style={{ marginBottom: 2 }}>{ui.titulo}</h1>
+                <h1 className="panel-title" style={{ marginBottom: 2, display: "flex", alignItems: "center" }}>
+                  {ui.titulo}
+                  <InfoTip>
+                    En jerga inmobiliaria esto es «{ui.tag}». Comparamos tu precio por m² contra
+                    el de propiedades parecidas: si cae en el 25% más económico decimos que está
+                    barato (verde), si está en el 25% más caro está caro (rojo), y en el medio es
+                    precio normal (ámbar).
+                  </InfoTip>
+                </h1>
                 <p className="panel-sub" style={{ marginBottom: 0 }}>{ui.sub}</p>
               </div>
             </div>
           )}
 
-          <p className="panel-eyebrow">Mercado en {result.district} · {result.property_type}</p>
-          <div className="market-ref" style={{ marginTop: 6 }}>
-            <span className="market-ref-label">Rango de precio por m² (USD)</span>
-            <span className="market-ref-value">${m.p25} – ${m.p75}</span>
-          </div>
+          <p className="panel-eyebrow" style={{ display: "flex", alignItems: "center" }}>
+            Precios en {result.district} · {tipoLabel}
+            <InfoTip>
+              Miramos propiedades parecidas a la tuya (mismo distrito, tipo, área y dormitorios)
+              que están a la venta, y comparamos su precio por metro cuadrado. Así sabemos cuánto
+              se paga normalmente en la zona.
+            </InfoTip>
+          </p>
 
-          <div className="row-3" style={{ marginTop: 14 }}>
-            <Stat label="P25 (USD/m²)" value={`$${m.p25}`} />
-            <Stat label="Mediana" value={`$${m.p50}`} />
-            <Stat label="P75" value={`$${m.p75}`} />
+          {/* Barra: barato → caro, con tu precio marcado */}
+          <div className="vbar">
+            {result.has_price && (
+              <>
+                <span className="vlabel" style={{ left: `${pos}%`, color: ui.color }}>Tú · ${upm}/m²</span>
+                <span className="vmk" style={{ left: `${pos}%`, background: ui.color }} />
+              </>
+            )}
           </div>
+          <div className="vbar-x">
+            <span>Barato<br /><b>${m.p25}/m²</b></span>
+            <span style={{ textAlign: "center" }}>Lo normal<br /><b>${m.p50}/m²</b></span>
+            <span style={{ textAlign: "right" }}>Caro<br /><b>${m.p75}/m²</b></span>
+          </div>
+          <p className="field-hint" style={{ marginTop: 8, display: "flex", alignItems: "center" }}>
+            «Lo normal» es el precio del medio
+            <InfoTip>
+              Es la mediana: si ordenas todas las propiedades parecidas por precio, es la del medio.
+              La mitad cuesta más y la mitad menos. «Barato» y «Caro» marcan el 25% más económico y
+              el 25% más caro de la zona.
+            </InfoTip>
+          </p>
 
-          {result.has_price && (
-            <div className="market-ref" style={{ marginTop: 14 }}>
-              <span className="market-ref-label">Tu precio: ${result.input.price_usd_per_m2}/m²</span>
-              <span className="market-ref-value">{result.diff_pct > 0 ? "+" : ""}{result.diff_pct}% vs mediana</span>
+          {result.has_price && ui && (
+            <div style={{ marginTop: 14, background: ui.bg, borderRadius: 10, padding: "12px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: ui.color, display: "flex", alignItems: "center" }}>
+                Tu precio: ${upm}/m²
+                <InfoTip>
+                  Es el precio total dividido entre los metros cuadrados. Sirve para comparar
+                  propiedades de distinto tamaño en igualdad de condiciones.
+                </InfoTip>
+              </span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: ui.color, textAlign: "right" }}>{diffText}</span>
             </div>
           )}
 
-          <p className="field-hint" style={{ marginTop: 14 }}>
-            Basado en {result.n_comps} comparables ({result.strategy === "similares" ? "similares en área y dormitorios" : "del distrito completo"}).
+          <p className="field-hint" style={{ marginTop: 14, display: "flex", alignItems: "center" }}>
+            Calculado con {result.n_comps} propiedades parecidas
+            <InfoTip>
+              Mientras más propiedades parecidas haya, más confiable es el resultado.{" "}
+              {result.strategy === "similares"
+                ? "Usamos las más parecidas en área y dormitorios."
+                : "No había suficientes muy parecidas, así que usamos todo el distrito como referencia."}
+            </InfoTip>
           </p>
 
           <div className="section-sep" />
@@ -301,11 +355,21 @@ function Resultado({ result, form, onReset }) {
   );
 }
 
-function Stat({ label, value }) {
+function InfoTip({ children }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div style={{ background: "var(--bg)", borderRadius: 8, padding: "10px 12px" }}>
-      <div style={{ fontSize: 11, color: "var(--ink-60)" }}>{label}</div>
-      <div style={{ fontSize: 16, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{value}</div>
-    </div>
+    <span
+      className="itip"
+      tabIndex={0}
+      role="button"
+      aria-label="Más información"
+      onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onBlur={() => setOpen(false)}
+    >
+      <span className="itip-icon">i</span>
+      {open && <span className="itip-pop">{children}</span>}
+    </span>
   );
 }
