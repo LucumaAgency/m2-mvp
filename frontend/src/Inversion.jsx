@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { calcular } from "./lib/api.js";
+import InfoTip from "./InfoTip.jsx";
+
+// % estándar en Perú para gastos notariales + registrales sobre el precio de compra.
+const NOTARIALES_PCT = 0.015;
 
 // Pre-llenado con el caso real del Excel para que funcione de inmediato.
 const DEFAULTS = {
@@ -25,7 +29,8 @@ const FIELDS = [
   { k: "inicioAlquiler", l: "Inicio de alquiler", t: "date" },
   { k: "cuotaHipoteca", l: "Cuota hipoteca mensual (S/.)", t: "number" },
   { k: "saldoCapital", l: "Saldo de capital hoy (S/.)", t: "number" },
-  { k: "gastosNotariales", l: "Gastos notariales (S/.)", t: "number" },
+  { k: "gastosNotariales", l: "Gastos notariales (S/.)", t: "number",
+    tip: "Lo estándar en Perú es ~1.5% del precio de compra (gastos notariales + registrales). Lo pre-llenamos por ti; si conoces el monto real, reemplázalo." },
   { k: "alquilerBrutoMensual", l: "Alquiler bruto mensual (S/.)", t: "number" },
   { k: "precioVentaConservador", l: "Precio venta conservador (S/.)", t: "number" },
   { k: "precioVentaOptimista", l: "Precio venta optimista (S/.)", t: "number" },
@@ -46,14 +51,15 @@ const pct = (n) => (n == null ? "—" : (n * 100).toFixed(1) + "%");
 // caso de ejemplo. Deriva los precios de venta del precio de compra para que
 // el escenario sea coherente; el usuario los puede ajustar.
 function buildInitial(state) {
-  if (!state || (!state.precioCompra && !state.area)) return DEFAULTS;
   const f = { ...DEFAULTS };
-  if (state.area) f.area = state.area;
-  if (state.precioCompra) {
+  if (state?.area) f.area = state.area;
+  if (state?.precioCompra) {
     f.precioCompra = state.precioCompra;
     f.precioVentaConservador = Math.round(state.precioCompra);
     f.precioVentaOptimista = Math.round(state.precioCompra * 1.1);
   }
+  // Gastos notariales = 1.5% del precio de compra (estándar).
+  f.gastosNotariales = Math.round(Number(f.precioCompra || 0) * NOTARIALES_PCT);
   return f;
 }
 
@@ -64,8 +70,16 @@ export default function Inversion() {
   const [res, setRes] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errs, setErrs] = useState(null);
+  const [notarialesTouched, setNotarialesTouched] = useState(false);
 
-  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  const set = (k, v) => setForm((f) => {
+    const next = { ...f, [k]: v };
+    // Si cambia el precio de compra y no editaste los notariales, recalcula 1.5%.
+    if (k === "precioCompra" && !notarialesTouched) {
+      next.gastosNotariales = Math.round(Number(v || 0) * NOTARIALES_PCT);
+    }
+    return next;
+  });
 
   async function run() {
     setErrs(null); setLoading(true);
@@ -110,8 +124,17 @@ export default function Inversion() {
           <div className="row-2">
             {FIELDS.map((f) => (
               <div className="field" key={f.k}>
-                <label className="field-label">{f.l}</label>
-                <input type={f.t} value={form[f.k]} onChange={(e) => set(f.k, e.target.value)} />
+                <label className="field-label">
+                  {f.l}{f.tip && <InfoTip>{f.tip}</InfoTip>}
+                </label>
+                <input
+                  type={f.t}
+                  value={form[f.k]}
+                  onChange={(e) => {
+                    if (f.k === "gastosNotariales") setNotarialesTouched(true);
+                    set(f.k, e.target.value);
+                  }}
+                />
               </div>
             ))}
           </div>
