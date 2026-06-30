@@ -47,6 +47,16 @@ const VERDICT_UI = {
 const soles = (n) => "S/. " + (n ?? 0).toLocaleString("es-PE", { maximumFractionDigits: 0 });
 const pct = (n) => (n == null ? "—" : (n * 100).toFixed(1) + "%");
 
+// Meses → "3 años y 10 meses" (omite la parte que sea 0).
+function aniosMeses(meses) {
+  const m = Math.round(meses || 0);
+  const a = Math.floor(m / 12);
+  const r = m % 12;
+  const pa = a ? `${a} ${a === 1 ? "año" : "años"}` : "";
+  const pm = r ? `${r} ${r === 1 ? "mes" : "meses"}` : "";
+  return [pa, pm].filter(Boolean).join(" y ") || "0 meses";
+}
+
 // Mezcla los datos que llegan del valuador (precio de compra y m²) sobre el
 // caso de ejemplo. Deriva los precios de venta del precio de compra para que
 // el escenario sea coherente; el usuario los puede ajustar.
@@ -172,7 +182,7 @@ function Resultado({ res }) {
 
         <p className="panel-eyebrow">Resumen del periodo</p>
         <div className="row-3" style={{ marginBottom: 16 }}>
-          <Stat l="Periodo" v={`${res.tiempos.periodoAnios} años`} />
+          <Stat l="Periodo evaluado" v={aniosMeses(res.tiempos.mesesTotales)} />
           <Stat l="Inflación acum." v={pct(res.inflacion.acumulada)} />
           <Stat l="Cap rate neto" v={pct(res.ratios.netCapRate)} />
         </div>
