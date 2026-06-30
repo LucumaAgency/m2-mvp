@@ -20,6 +20,8 @@ export default function Valuador() {
     dorm: "3", moneda: "S/ soles", precio: "", intent: "comprar",
   });
   const [precioTouched, setPrecioTouched] = useState(false);
+  const [estimate, setEstimate] = useState(null);   // {p50, area, distrito, nComps}
+  const [estimating, setEstimating] = useState(false);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -37,25 +39,53 @@ export default function Valuador() {
       || distritos.find((d) => d.name === form.distrito) || null;
   }
 
-  // Precio aproximado = mediana USD/m² del distrito × área total, en la moneda elegida.
-  function marketEstimate(moneda = form.moneda) {
+  // Estimado de mercado calculado en MongoDB: mediana USD/m² de PROPIEDADES
+  // PARECIDAS (mismo distrito, tipo, área ±25%, dorms ±1) vía /api/valuar sin precio.
+  async function fetchEstimate() {
     const d = selectedDistrict();
-    const med = d?.stats?.median_price_usd_per_m2_venta;
     const area = Number(form.areaTotal || form.areaConst);
-    if (!med || !area || area < 10) return null;
-    const usd = med * area;
-    const value = Math.round(moneda.startsWith("USD") ? usd : usd * TC_REF);
-    return { value, perM2Usd: Math.round(med), area, distrito: d.name };
+    if (!d || !area || area < 10) { setEstimate(null); return null; }
+    setEstimating(true);
+    try {
+      const r = await valuar({
+        district: d.slug || slugify(d.name),
+        propertyType: TIPO_MAP[form.tipo] || "departamento",
+        operation: "venta",
+        area,
+        bedrooms: form.dorm === "5 o más" ? 5 : Number(form.dorm),
+      });
+      if (r?.ok && r.market?.p50) {
+        const est = { p50: r.market.p50, area, distrito: r.district, nComps: r.n_comps };
+        setEstimate(est);
+        return est;
+      }
+      setEstimate(null); return null;
+    } catch { setEstimate(null); return null; }
+    finally { setEstimating(false); }
   }
 
-  // Al llegar al paso 3, pre-llena el precio con el estimado de mercado
-  // (salvo que el usuario ya lo haya escrito a mano).
+  // Valor estimado en la moneda elegida = mediana $/m² × área.
+  const estValue = (est, moneda = form.moneda) =>
+    est ? Math.round(est.p50 * est.area * (moneda.startsWith("USD") ? 1 : TC_REF)) : null;
+
+  // Precio inicial según la intención: comprar = vacío (pones lo que te piden);
+  // vender / conocer valor = el estimado de mercado.
+  const precioPara = (intent, est) =>
+    intent === "comprar" ? "" : (est ? String(estValue(est)) : "");
+
+  // Al llegar al paso 3: calcula el estimado y pre-llena el precio (si no fue editado).
   useEffect(() => {
-    if (step !== 3 || precioTouched) return;
-    const e = marketEstimate();
-    if (e) setForm((f) => ({ ...f, precio: String(e.value) }));
+    if (step !== 3) return;
+    (async () => {
+      const est = await fetchEstimate();
+      if (!precioTouched) setForm((f) => ({ ...f, precio: precioPara(f.intent, est) }));
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
+
+  function chooseIntent(id) {
+    setForm((f) => ({ ...f, intent: id, precio: precioTouched ? f.precio : precioPara(id, estimate) }));
+  }
 
   async function evaluar() {
     setError(null);
@@ -90,8 +120,13 @@ export default function Valuador() {
 
   if (result) return <Resultado result={result} form={form} onReset={() => setResult(null)} />;
 
-  const estimate = marketEstimate();
   const monedaSym = form.moneda.startsWith("USD") ? "$" : "S/ ";
+  const INTENT_META = {
+    comprar:  { precioLabel: "¿Cuánto te piden?",            hint: "Referencia de mercado" },
+    vender:   { precioLabel: "¿A cuánto quieres vender?",    hint: "Precio sugerido" },
+    invertir: { precioLabel: "Valor de mercado estimado",    hint: "Valor estimado" },
+  };
+  const im = INTENT_META[form.intent] || INTENT_META.comprar;
 
   return (
     <>
@@ -210,50 +245,53 @@ export default function Valuador() {
           {/* PASO 3 */}
           <div className={`panel ${step === 3 ? "active" : ""}`}>
             <p className="panel-eyebrow">Paso 3 de 3</p>
-            <h1 className="panel-title">¿Cuánto piden por la propiedad?</h1>
-            <p className="panel-sub">Comparamos este precio con el mercado y calculamos el score al instante.</p>
-
-            <div className="field">
-              <label className="field-label">Precio de venta</label>
-              <div className="price-wrap">
-                <select value={form.moneda} onChange={(e) => {
-                  const v = e.target.value;
-                  setForm((f) => ({ ...f, moneda: v }));
-                  if (!precioTouched) { const est = marketEstimate(v); if (est) setForm((f) => ({ ...f, precio: String(est.value) })); }
-                }}>
-                  <option>S/ soles</option><option>USD dólares</option>
-                </select>
-                <input type="number" placeholder="ej: 650000" value={form.precio}
-                  onChange={(e) => { setPrecioTouched(true); set("precio", e.target.value); }} />
-              </div>
-              {!precioTouched && estimate && (
-                <span className="field-hint" style={{ marginTop: 6, display: "flex", alignItems: "center" }}>
-                  Estimado de mercado: {monedaSym}{estimate.value.toLocaleString("es-PE")} · {estimate.area} m² × ${estimate.perM2Usd}/m² (mediana en {estimate.distrito})
-                  <InfoTip>
-                    Es solo un punto de partida, calculado con el precio típico por m² del distrito.
-                    Si conoces el precio real que piden (o al que quieres vender), reemplázalo.
-                  </InfoTip>
-                </span>
-              )}
-            </div>
-
-            <div className="section-sep" />
+            <h1 className="panel-title">Un último paso</h1>
+            <p className="panel-sub">Dinos para qué evalúas y revisa el precio. Calculamos el resultado al instante.</p>
 
             <div className="field">
               <label className="field-label">¿Para qué evaluás?</label>
               <div className="intent-group">
                 {[
-                  { id: "comprar", icon: "🏠", t: "Quiero comprar esta propiedad", d: "Evalúo si el precio es justo antes de negociar" },
+                  { id: "comprar", icon: "🏠", t: "Quiero comprar esta propiedad", d: "Evalúo si el precio que me piden es justo" },
                   { id: "vender", icon: "💰", t: "Quiero vender una propiedad mía", d: "Busco el precio ideal para publicar" },
                   { id: "invertir", icon: "📊", t: "Solo quiero conocer el valor de mercado", d: "Referencia o inversión a futuro" },
                 ].map((opt) => (
-                  <div key={opt.id} className={`intent-option ${form.intent === opt.id ? "on" : ""}`} onClick={() => set("intent", opt.id)} role="radio" aria-checked={form.intent === opt.id}>
+                  <div key={opt.id} className={`intent-option ${form.intent === opt.id ? "on" : ""}`} onClick={() => chooseIntent(opt.id)} role="radio" aria-checked={form.intent === opt.id}>
                     <div className="intent-icon">{opt.icon}</div>
                     <div className="intent-text"><div className="intent-title">{opt.t}</div><div className="intent-desc">{opt.d}</div></div>
                     <div className="intent-radio" />
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="section-sep" />
+
+            <div className="field">
+              <label className="field-label">{im.precioLabel}</label>
+              <div className="price-wrap">
+                <select value={form.moneda} onChange={(e) => {
+                  const v = e.target.value;
+                  setForm((f) => ({ ...f, moneda: v }));
+                  if (!precioTouched && form.intent !== "comprar" && estimate)
+                    setForm((f) => ({ ...f, moneda: v, precio: String(estValue(estimate, v)) }));
+                }}>
+                  <option>S/ soles</option><option>USD dólares</option>
+                </select>
+                <input type="number" placeholder="ej: 650000" value={form.precio}
+                  onChange={(e) => { setPrecioTouched(true); set("precio", e.target.value); }} />
+              </div>
+              {estimating && <span className="field-hint" style={{ marginTop: 6 }}>Calculando estimado de mercado…</span>}
+              {!estimating && estimate && (
+                <span className="field-hint" style={{ marginTop: 6, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+                  {im.hint}: {monedaSym}{estValue(estimate).toLocaleString("es-PE")} · {estimate.area} m² × ${estimate.p50}/m²
+                  <InfoTip>
+                    Calculado con {estimate.nComps} propiedades parecidas a la tuya (mismo distrito, tipo,
+                    área y dormitorios) de nuestra base.{" "}
+                    {form.intent === "comprar" ? "Compáralo con lo que te piden." : "Es un punto de partida; ajústalo si lo necesitas."}
+                  </InfoTip>
+                </span>
+              )}
             </div>
 
             <div className="cta-area">
