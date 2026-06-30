@@ -183,8 +183,16 @@ function Resultado({ res }) {
         <p className="panel-eyebrow">Resumen del periodo</p>
         <div className="row-3" style={{ marginBottom: 16 }}>
           <Stat l="Periodo evaluado" v={aniosMeses(res.tiempos.mesesTotales)} />
-          <Stat l="Inflación acum." v={pct(res.inflacion.acumulada)} />
-          <Stat l="Cap rate neto" v={pct(res.ratios.netCapRate)} />
+          <Stat
+            l="Rentab. anual por alquiler"
+            v={pct(res.ratios.netCapRate)}
+            tip="Lo que te deja el alquiler cada año, ya descontados impuestos y gastos, comparado con el precio de compra (alquiler neto anual ÷ precio de compra). No incluye la subida de precio del inmueble."
+          />
+          <Stat
+            l="Ganancia anual (conservador)"
+            v={pct(res.escenarios?.[res.modo]?.conservador?.anualizadaPct)}
+            tip="Rentabilidad total por año (alquiler + venta), ya ajustada por inflación, en el escenario conservador (el precio de venta más bajo). Es la mirada prudente del retorno."
+          />
         </div>
 
         <p className="panel-eyebrow">Utilidad neta total (venta + alquiler)</p>
@@ -308,10 +316,12 @@ function Row({ l, e }) {
   );
 }
 
-function Stat({ l, v }) {
+function Stat({ l, v, tip }) {
   return (
     <div style={{ background: "var(--bg)", borderRadius: 8, padding: "10px 12px" }}>
-      <div style={{ fontSize: 11, color: "var(--ink-60)" }}>{l}</div>
+      <div style={{ fontSize: 11, color: "var(--ink-60)", display: "flex", alignItems: "center" }}>
+        {l}{tip && <InfoTip>{tip}</InfoTip>}
+      </div>
       <div style={{ fontSize: 15, fontWeight: 600 }}>{v}</div>
     </div>
   );
