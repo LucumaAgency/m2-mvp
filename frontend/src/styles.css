@@ -501,3 +501,11 @@ select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width
 .vbar .vlabel{position:absolute;top:-26px;transform:translateX(-50%);font-size:12px;font-weight:700;white-space:nowrap}
 .vbar-x{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-60);font-weight:600}
 .vbar-x b{color:var(--ink)}
+
+/* Tooltip en portal (escapa de overflow:hidden del card) */
+.itip-portal{
+  position:fixed; z-index:9999; width:240px; max-width:80vw;
+  background:var(--ink); color:#fff; font-size:12px; font-weight:400; line-height:1.45;
+  padding:10px 12px; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,.22);
+  text-align:left; text-transform:none; letter-spacing:normal; pointer-events:none;
+}

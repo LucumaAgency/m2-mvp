@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import {
   getDistritos, valuar, TC_REF, DISTRITOS_FALLBACK, TIPO_MAP, slugify,
@@ -68,10 +69,9 @@ export default function Valuador() {
   const estValue = (est, moneda = form.moneda) =>
     est ? Math.round(est.p50 * est.area * (moneda.startsWith("USD") ? 1 : TC_REF)) : null;
 
-  // Precio inicial según la intención: comprar = vacío (pones lo que te piden);
-  // vender / conocer valor = el estimado de mercado.
-  const precioPara = (intent, est) =>
-    intent === "comprar" ? "" : (est ? String(estValue(est)) : "");
+  // El input siempre arranca con el estimado de mercado (referencia). El usuario
+  // lo puede reemplazar (sobre todo en "comprar", con lo que realmente le piden).
+  const precioPara = (intent, est) => (est ? String(estValue(est)) : "");
 
   // Al llegar al paso 3: calcula el estimado y pre-llena el precio (si no fue editado).
   useEffect(() => {
@@ -273,7 +273,7 @@ export default function Valuador() {
                 <select value={form.moneda} onChange={(e) => {
                   const v = e.target.value;
                   setForm((f) => ({ ...f, moneda: v }));
-                  if (!precioTouched && form.intent !== "comprar" && estimate)
+                  if (!precioTouched && estimate)
                     setForm((f) => ({ ...f, moneda: v, precio: String(estValue(estimate, v)) }));
                 }}>
                   <option>S/ soles</option><option>USD dólares</option>
@@ -449,21 +449,53 @@ function Resultado({ result, form, onReset }) {
   );
 }
 
+// Tooltip que se renderiza en un portal con posición fija, para escapar del
+// overflow:hidden del card y de cualquier contenedor.
 function InfoTip({ children }) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0, place: "top" });
+  const ref = useRef(null);
+
+  const place = () => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const arriba = r.top > 170; // ¿hay espacio arriba?
+    setPos({
+      left: r.left + r.width / 2,
+      top: arriba ? r.top - 8 : r.bottom + 8,
+      place: arriba ? "top" : "bottom",
+    });
+  };
+  const show = () => { place(); setOpen(true); };
+  const hide = () => setOpen(false);
+
   return (
     <span
+      ref={ref}
       className="itip"
       tabIndex={0}
       role="button"
       aria-label="Más información"
-      onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-      onBlur={() => setOpen(false)}
+      onClick={(e) => { e.stopPropagation(); open ? hide() : show(); }}
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onBlur={hide}
     >
       <span className="itip-icon">i</span>
-      {open && <span className="itip-pop">{children}</span>}
+      {open && createPortal(
+        <span
+          className="itip-portal"
+          style={{
+            top: pos.top,
+            left: pos.left,
+            transform: pos.place === "top" ? "translate(-50%,-100%)" : "translate(-50%,0)",
+          }}
+        >
+          {children}
+        </span>,
+        document.body
+      )}
     </span>
   );
 }
