@@ -89,6 +89,21 @@ test("flujo de alquiler no es autosuficiente (déficit mensual)", () => {
   assert.ok(approx(r.alquiler.flujoNetoMensual, -127.6, 0.5));                                    // C111
 });
 
+test("tipoCompra decoplado: escenarios iguales, solo cambia modo", () => {
+  const fin = calcularInversion({ ...SURQUILLO, tipoCompra: "financiado" });
+  const con = calcularInversion({ ...SURQUILLO, tipoCompra: "contado" });
+  // Los 4 escenarios se calculan igual sin importar el toggle.
+  assert.equal(fin.escenarios.financiado.optimista.utilidadTotal,
+               con.escenarios.financiado.optimista.utilidadTotal);
+  assert.equal(fin.escenarios.contado.conservador.utilidadTotal,
+               con.escenarios.contado.conservador.utilidadTotal);
+  // El toggle solo cambia el escenario destacado.
+  assert.equal(fin.modo, "financiado");
+  assert.equal(con.modo, "contado");
+  // La hipoteca se reporta porque hay datos de crédito, aunque sea contado.
+  assert.ok(con.hipoteca);
+});
+
 test("proyección año a año: estructura y crecimiento compuesto", () => {
   const r = calcularInversion({ ...SURQUILLO, horizonteProyeccion: 10 });
   const p = r.proyeccion;

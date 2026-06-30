@@ -201,10 +201,10 @@ function Resultado({ res }) {
             <th style={{ textAlign: "left", fontWeight: 500, padding: "6px 0" }}>Escenario</th><th>Total</th><th>Anual</th>
           </tr></thead>
           <tbody>
-            <Row l="Financiado · optimista" e={fo} />
-            <Row l="Financiado · conservador" e={fc} />
-            <Row l="Contado · optimista" e={co} />
-            <Row l="Contado · conservador" e={cc} />
+            <Row l="Financiado · optimista" e={fo} hl={res.modo === "financiado"} />
+            <Row l="Financiado · conservador" e={fc} hl={res.modo === "financiado"} />
+            <Row l="Contado · optimista" e={co} hl={res.modo === "contado"} />
+            <Row l="Contado · conservador" e={cc} hl={res.modo === "contado"} />
           </tbody>
         </table>
 
@@ -305,13 +305,15 @@ function AlertaDescarte({ d }) {
   );
 }
 
-function Row({ l, e }) {
+function Row({ l, e, hl }) {
   const neg = e.utilidadTotal < 0;
   return (
-    <tr style={{ borderTop: "1px solid var(--border)" }}>
-      <td style={{ padding: "8px 0" }}>{l}</td>
-      <td style={{ textAlign: "right", fontWeight: 600, color: neg ? "var(--danger)" : "var(--green-text)", fontVariantNumeric: "tabular-nums" }}>{soles(e.utilidadTotal)}</td>
-      <td style={{ textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{pct(e.anualizadaPct)}</td>
+    <tr style={{ borderTop: "1px solid var(--border)", background: hl ? "var(--green-light)" : "transparent" }}>
+      <td style={{ padding: "8px 8px", fontWeight: hl ? 600 : 400, borderRadius: "6px 0 0 6px" }}>
+        {l}{hl && <span style={{ color: "var(--green)", fontWeight: 600 }}> · tu caso</span>}
+      </td>
+      <td style={{ textAlign: "right", padding: "8px 8px", fontWeight: 600, color: neg ? "var(--danger)" : "var(--green-text)", fontVariantNumeric: "tabular-nums" }}>{soles(e.utilidadTotal)}</td>
+      <td style={{ textAlign: "right", padding: "8px 8px", fontVariantNumeric: "tabular-nums", borderRadius: "0 6px 6px 0" }}>{pct(e.anualizadaPct)}</td>
     </tr>
   );
 }

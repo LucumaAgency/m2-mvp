@@ -135,6 +135,9 @@ function proyeccionAnual({ base, g, pi, n, rentaNetaAnual }) {
 // ── Cálculo principal ─────────────────────────────────────────────
 export function calcularInversion(raw) {
   const o = { ...DEFAULTS, ...raw };
+  // El toggle SOLO decide el escenario destacado (res.modo) y si se muestra el
+  // bloque de hipoteca. Los escenarios financiado y contado se calculan SIEMPRE
+  // (con los mismos datos) para que la comparación lado a lado sea válida.
   const financiado = String(o.tipoCompra || "financiado").toLowerCase() === "financiado";
 
   // 1. Tiempos
@@ -148,17 +151,19 @@ export function calcularInversion(raw) {
   const infAcum = inflacionAcumulada(o.fechaCompra, o.fechaEvaluacion);    // C35
   const infAnualPeriodo = Math.pow(1 + infAcum, 1 / periodoAnios) - 1;     // C37
 
-  // 2. Hipoteca (solo financiado)
+  // 2. Hipoteca — se calcula siempre que haya datos de crédito (cuota), sin importar
+  // el toggle, para que el escenario financiado sea válido también al elegir contado.
   const precioCompra = Number(o.precioCompra);                             // C22
   const inicial = o.enganchePct * precioCompra;                            // C24
   const hipotecaInicial = (1 - o.enganchePct) * precioCompra;             // C25
-  const cuota = financiado ? Number(o.cuotaHipoteca) : 0;                  // C27
-  const saldoCapital = financiado ? Number(o.saldoCapital) : 0;            // C28
+  const cuota = Number(o.cuotaHipoteca) || 0;                              // C27
+  const saldoCapital = Number(o.saldoCapital) || 0;                        // C28
+  const tieneHipoteca = cuota > 0;
   const totalPagadoBanco = cuota * mesesTotales;                          // C86
-  const interesesYotros = financiado                                       // C29
+  const interesesYotros = tieneHipoteca                                    // C29
     ? mesesTotales * cuota + saldoCapital - hipotecaInicial
     : 0;
-  const teaImplicita = financiado                                          // C87
+  const teaImplicita = tieneHipoteca                                       // C87
     ? Math.pow(1 + annuityRate(o.periodoCreditoAnios * 12, -cuota, hipotecaInicial), 12) - 1
     : null;
 
@@ -201,7 +206,7 @@ export function calcularInversion(raw) {
   const mesesSinAlquilar = Number(o.mesesSinAlquilar || 0);               // C33
   const inicialNotarialesNominal = inicial + Number(o.gastosNotariales || 0); // C95
   const inicialNotarialesReal = inicialNotarialesNominal * (1 + infAcum); // C96
-  const cuotasSinInquilino = financiado                                    // C97
+  const cuotasSinInquilino = (tieneHipoteca && o.fechaEntrega)             // C97
     ? monthsBetween(o.fechaCompra, o.fechaEntrega) + mesesSinAlquilar
     : 0;
   const montoCuotasSinInquilinoNominal = cuotasSinInquilino * cuota;       // C98
@@ -390,7 +395,7 @@ export function calcularInversion(raw) {
       anualPeriodo: round(infAnualPeriodo, 4),
       vpnMinimo: round(vpnMinimo),
     },
-    hipoteca: financiado ? {
+    hipoteca: tieneHipoteca ? {
       inicial: round(inicial),
       hipotecaInicial: round(hipotecaInicial),
       cuota: round(cuota),
