@@ -284,7 +284,7 @@ export default function Valuador() {
               {estimating && <span className="field-hint" style={{ marginTop: 6 }}>Calculando estimado de mercado…</span>}
               {!estimating && estimate && (
                 <span className="field-hint" style={{ marginTop: 6, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-                  {im.hint}: {monedaSym}{estValue(estimate).toLocaleString("es-PE")} · {estimate.area} m² × ${estimate.p50}/m²
+                  {im.hint}: {monedaSym}{estValue(estimate).toLocaleString("es-PE")} · {estimate.area} m² × {monedaSym}{(form.moneda.startsWith("USD") ? estimate.p50 : Math.round(estimate.p50 * TC_REF)).toLocaleString("es-PE")}/m²
                   <InfoTip>
                     Calculado con {estimate.nComps} propiedades parecidas a la tuya (mismo distrito, tipo,
                     área y dormitorios) de nuestra base.{" "}
@@ -358,6 +358,13 @@ function Resultado({ result, form, onReset }) {
     ? result.property_type.charAt(0).toUpperCase() + result.property_type.slice(1)
     : "propiedad";
 
+  // Mostrar TODO en la moneda elegida por el usuario. La data de mercado viene en
+  // USD/m²; si eligió soles, convertimos con TC_REF y mostramos el tipo de cambio.
+  const enSoles = !form.moneda.startsWith("USD");
+  const sym = enSoles ? "S/ " : "$";
+  const conv = (usd) => (usd == null ? null : enSoles ? usd * TC_REF : usd);
+  const fmt = (usd) => sym + Math.round(conv(usd)).toLocaleString("es-PE");
+
   return (
     <>
       <nav>
@@ -397,15 +404,15 @@ function Resultado({ result, form, onReset }) {
           <div className="vbar">
             {result.has_price && (
               <>
-                <span className="vlabel" style={{ left: `${pos}%`, color: ui.color }}>Tú · ${upm}/m²</span>
+                <span className="vlabel" style={{ left: `${pos}%`, color: ui.color }}>Tú · {fmt(upm)}/m²</span>
                 <span className="vmk" style={{ left: `${pos}%`, background: ui.color }} />
               </>
             )}
           </div>
           <div className="vbar-x">
-            <span>Barato<br /><b>${m.p25}/m²</b></span>
-            <span style={{ textAlign: "center" }}>Lo normal<br /><b>${m.p50}/m²</b></span>
-            <span style={{ textAlign: "right" }}>Caro<br /><b>${m.p75}/m²</b></span>
+            <span>Barato<br /><b>{fmt(m.p25)}/m²</b></span>
+            <span style={{ textAlign: "center" }}>Lo normal<br /><b>{fmt(m.p50)}/m²</b></span>
+            <span style={{ textAlign: "right" }}>Caro<br /><b>{fmt(m.p75)}/m²</b></span>
           </div>
           <p className="field-hint" style={{ marginTop: 8, display: "flex", alignItems: "center" }}>
             «Lo normal» es el precio del medio
@@ -419,7 +426,7 @@ function Resultado({ result, form, onReset }) {
           {result.has_price && ui && (
             <div style={{ marginTop: 14, background: ui.bg, borderRadius: 10, padding: "12px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
               <span style={{ fontSize: 13, fontWeight: 600, color: ui.color, display: "flex", alignItems: "center" }}>
-                Tu precio: ${upm}/m²
+                Tu precio: {fmt(upm)}/m²
                 <InfoTip>
                   Es el precio total dividido entre los metros cuadrados. Sirve para comparar
                   propiedades de distinto tamaño en igualdad de condiciones.
@@ -438,6 +445,17 @@ function Resultado({ result, form, onReset }) {
                 : "No había suficientes muy parecidas, así que usamos todo el distrito como referencia."}
             </InfoTip>
           </p>
+
+          {enSoles && (
+            <p className="field-hint" style={{ marginTop: 4, display: "flex", alignItems: "center" }}>
+              Valores en soles · tipo de cambio S/ {TC_REF.toFixed(2)} por US$
+              <InfoTip>
+                Nuestra base de mercado está en dólares. Como elegiste soles, convertimos todo a
+                S/. usando un tipo de cambio de {TC_REF.toFixed(2)}. Los porcentajes no cambian con
+                la moneda.
+              </InfoTip>
+            </p>
+          )}
 
           <div className="section-sep" />
           <Link to="/inversion" state={invState} className="btn-next" style={{ justifyContent: "center", width: "100%" }}>
