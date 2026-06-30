@@ -62,14 +62,16 @@ function aniosMeses(meses) {
 // el escenario sea coherente; el usuario los puede ajustar.
 function buildInitial(state) {
   const f = { ...DEFAULTS };
-  if (state?.area) f.area = state.area;
   if (state?.precioCompra) {
+    // Caso nuevo (viene del valuador): derivamos venta y notariales del precio.
+    if (state.area) f.area = state.area;
     f.precioCompra = state.precioCompra;
     f.precioVentaConservador = Math.round(state.precioCompra);
     f.precioVentaOptimista = Math.round(state.precioCompra * 1.1);
+    f.gastosNotariales = Math.round(state.precioCompra * NOTARIALES_PCT);
   }
-  // Gastos notariales = 1.5% del precio de compra (estándar).
-  f.gastosNotariales = Math.round(Number(f.precioCompra || 0) * NOTARIALES_PCT);
+  // Sin state, se queda con el ejemplo Surquillo tal cual (gastos S/.3,000),
+  // para que reproduzca exactamente el Excel.
   return f;
 }
 
