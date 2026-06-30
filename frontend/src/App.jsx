@@ -33,11 +33,12 @@ export default function Valuador() {
 
   async function evaluar() {
     setError(null);
-    const area = Number(form.areaConst || form.areaTotal);
+    // Valuación sobre ÁREA TOTAL (misma base que los comparables de la zona).
+    const area = Number(form.areaTotal || form.areaConst);
     const distritoObj = distritos.find((d) => (d.slug || slugify(d.name)) === form.distrito)
       || distritos.find((d) => d.name === form.distrito);
     if (!distritoObj) { setError("Selecciona un distrito."); setStep(1); return; }
-    if (!area || area < 10) { setError("Ingresa el área (m²)."); setStep(2); return; }
+    if (!form.areaTotal || Number(form.areaTotal) < 10) { setError("Ingresa el área total (mínimo 10 m²)."); setStep(2); return; }
 
     const precioNum = Number(form.precio);
     const priceUsd = form.moneda.startsWith("USD") ? precioNum : precioNum / TC_REF;
@@ -137,12 +138,24 @@ export default function Valuador() {
 
             <div className="row-2">
               <div className="field">
-                <label className="field-label">Área total (m²)</label>
-                <input type="number" placeholder="ej: 90" value={form.areaTotal} onChange={(e) => set("areaTotal", e.target.value)} />
+                <label className="field-label">
+                  Área total (m²) <span style={{ color: "var(--danger)" }}>*</span>
+                  <InfoTip>
+                    Es el área que figura en el aviso o la partida (incluye todo). La usamos para
+                    comparar contra propiedades similares, que están medidas con el mismo criterio.
+                  </InfoTip>
+                </label>
+                <input type="number" placeholder="ej: 90" min="10" value={form.areaTotal} onChange={(e) => set("areaTotal", e.target.value)} />
               </div>
               <div className="field">
-                <label className="field-label">Área construida (m²)</label>
-                <input type="number" placeholder="ej: 80" value={form.areaConst} onChange={(e) => set("areaConst", e.target.value)} />
+                <label className="field-label">
+                  Área construida (m²) <span className="optional">(opcional)</span>
+                  <InfoTip>
+                    Es el área techada. Es opcional y no cambia la valuación; se usa solo como dato
+                    extra para la calculadora de inversión.
+                  </InfoTip>
+                </label>
+                <input type="number" placeholder="ej: 80" min="10" value={form.areaConst} onChange={(e) => set("areaConst", e.target.value)} />
               </div>
             </div>
 
